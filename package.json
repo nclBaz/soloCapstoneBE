@@ -1,0 +1,50 @@
+{
+  "name": "soloCapstoneBE",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon -r dotenv/config ./server/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alekszone/soloCapstoneBE.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alekszone/soloCapstoneBE/issues"
+  },
+  "homepage": "https://github.com/alekszone/soloCapstoneBE#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "bcrypt": "^5.0.0",
+    "cloudinary": "^1.22.0",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-list-endpoints": "^5.0.0",
+    "fs-extra": "^9.0.1",
+    "helmet": "^3.23.3",
+    "json2csv": "^5.0.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.25",
+    "multer": "^1.4.2",
+    "passport": "^0.4.1",
+    "passport-facebook": "^3.0.0",
+    "passport-linkedin-oauth2": "^2.0.0",
+    "pdfkit": "^0.11.0",
+    "pump": "^3.0.0",
+    "query-to-mongo": "^0.10.1",
+    "request": "^2.88.2",
+    "socket.io": "^2.3.0",
+    "streamifier": "^0.1.1",
+    "validator": "^13.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
