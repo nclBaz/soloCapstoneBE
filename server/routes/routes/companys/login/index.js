@@ -3,7 +3,7 @@ const companyData = require("./schema")
 
 const companyRoute = express.Router()
 
-companyRoute.get("/" , async(req,res,next)=>{
+companyRoute.get("/all" , async(req,res,next)=>{
 try{
 const data = await companyData.find()
 res.send(data)
@@ -12,11 +12,13 @@ res.send(data)
     console.log(err)
 }
 })
-companyRoute.post("/",async(req,res,next)=>{
+companyRoute.post("/register",async(req,res,next)=>{
 try{
     const data = req.body
-    const hello = new companyData(data)
-    await hello.save()
+    console.log(req.body)
+    const newData = new companyData(data)
+    await newData.save()
+    res.send("data aded")
 }catch(err){
     next(err)
     console.log(err)
