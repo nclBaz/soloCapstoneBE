@@ -8,9 +8,11 @@ const name = process.env.DATABASENAME
 const password = process.env.PASSWORD
 const database = process.env.DATABASE
 const mainDatabase = process.env.MAINDATABASE
+const cookieParser = require("cookie-parser")
 const server = express()
 server.use(cors())
 server.use(express.json())
+server.use(cookieParser())
 server.use(notFound)
 server.use(badRequest)
 server.use(newDefinedError)

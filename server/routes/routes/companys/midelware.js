@@ -4,6 +4,7 @@ const ProfileSchema = require("./login/schema")
 const User = async(req,res,next)=>{
 try{
 const token = req.cookies.token
+console.log(token,"user")
 if(token){
 const data = await verifyToken(token)
 const user = await ProfileSchema.findById(data._id)
@@ -20,7 +21,7 @@ next()
 }
 }
 
-module.exports=User
+module.exports= {User}
 
 
 

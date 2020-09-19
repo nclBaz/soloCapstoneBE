@@ -33,9 +33,6 @@ validator:async(value)=>{
         }
     }
 }
-
-
-
 }
     },
 phoneNumber:{
@@ -55,6 +52,45 @@ token:{
 
 {timestamps:true}
 )
+
+companySchema.statics.findByCredentials = async(email,password)=>{
+
+const user = await Model.findOne({email:email})
+console.log(user)
+if(!user){
+    const err = new Error ("Email is not Correct ")
+    err.httpStatusCode = 404
+    throw err
+}
+const Match = await bcrypt.compare(password,user.password)
+console.log(Match)
+if(!Match){
+    const err =  new Error ("Password is not Correct");
+    err.httpStatusCode=401
+    throw err
+}else{
+    return user
+}
+}
+// companySchema.pre("save",async function(next){
+//     const user = this
+//     if(user.isModified('password')){
+// user.password = awa(user.password, 8)
+//     }
+//     next()
+// })
+
+companySchema.methods.toJSON = function(){
+let object = this.toObject()
+// delete object.password,
+// delete object.token,
+delete object.__v
+
+
+return object
+}
+
+
 const Model = mongoose.model('login',companySchema )
 module.exports = Model
 

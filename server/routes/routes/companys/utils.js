@@ -3,22 +3,30 @@ const ProfileSchema = require("./login/schema")
 
 const createToken = async (user) =>{
 try{
-const token = await generateToken({id:user._id})
-const user = await ProfileSchema.findById(user._id)
-user.token=token
-await user.save()
+    console.log(user,"hello")
+
+const token = await generateToken({_id:user._id})
+const newUser = await ProfileSchema.findById(user._id)
+
+
+
+console.log(newUser,"aleks")
+console.log(token, "eriseld")
+newUser.token=token
+console.log( process.env.SECRET_JWT)
+await newUser.save({ validateBeforeSave: false})
 return {token}
 }catch(err){
     console.log(err)
     throw new Error(err)
-}
+} 
 }
 
-const generateToken = (payload)=>{
-new Promise((res,rej)=>{
+const generateToken = (payload)=>
+new Promise((res,rej)=>
 jwt.sign(
   payload,
-  process.env.SECRET_JWT,
+  process.env.SECRET_JWT, 
   {expiresIn:"1d"},
   (err,token)=>{
       if(err)rej(err);
@@ -26,12 +34,12 @@ jwt.sign(
   }
 
 )
-})
+)
 
 
-}
 
-const verifyToken = (token)=>{
+
+const verifyToken = (token)=>
 new Promise((res,rej)=>{
  jwt.verify(token,process.env.SECRET_JWT,(err,credentials)=>{
      if(err){
@@ -45,7 +53,7 @@ new Promise((res,rej)=>{
          }
    })
     })
-}
+
 
 module.exports={
 createToken,
