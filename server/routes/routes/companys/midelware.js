@@ -4,12 +4,16 @@ const ProfileSchema = require("./login/schema")
 const User = async(req,res,next)=>{
 try{
 const token = req.cookies.token
-console.log(token,"user")
+console.log(token,"token is herre")
 if(token){
+    console.log(token)
 const data = await verifyToken(token)
 const user = await ProfileSchema.findById(data._id)
 if(user){
     req.user = user
+    req.token=token
+    console.log(req.token,"midelwares")
+    console.log(req.token,"midelwares")
 next()
 }else{
     res.status(404).send("Your username or password is incorrect")

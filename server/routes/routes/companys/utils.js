@@ -27,7 +27,7 @@ new Promise((res,rej)=>
 jwt.sign(
   payload,
   process.env.SECRET_JWT, 
-  {expiresIn:"1d"},
+  {expiresIn:"25d"},
   (err,token)=>{
       if(err)rej(err);
       res(token)
@@ -43,7 +43,7 @@ const verifyToken = (token)=>
 new Promise((res,rej)=>{
  jwt.verify(token,process.env.SECRET_JWT,(err,credentials)=>{
      if(err){
-         if(err.name==='TokenExpiredError'){
+         if(err.name == 'TokenExpiredError'){
              res()
          }else{
              rej(err)

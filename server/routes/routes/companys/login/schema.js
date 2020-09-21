@@ -1,8 +1,10 @@
 const {Schema} = require("mongoose")
 const mongoose = require("mongoose")
 const validator = require("validator")
-const bcrypt = require("bcrypt")
-const companySchema = new Schema({
+const bcrypt = require("bcryptjs")
+
+const companySchema = new Schema(
+    {
 companyName:{
 type:String,
 required:true,
@@ -16,7 +18,7 @@ minlength:[4,"name should be at least 4 character"]
 },
 surname:{
 type:String,
-required:true,
+// required:true,
 minlength:[4,"surname should be at least 4 character"]
 },
 email:{
@@ -52,19 +54,32 @@ token:{
 
 {timestamps:true}
 )
+companySchema.methods.toJSON = function(){
+    let object = this.toObject()
+    delete object.password,
+    delete object.token,
+    delete object.__v
+    
+    
+    
+    return object
+    }
+    
 
 companySchema.statics.findByCredentials = async(email,password)=>{
 
 const user = await Model.findOne({email:email})
-console.log(user)
+console.log(user,"data of user")
 if(!user){
     const err = new Error ("Email is not Correct ")
     err.httpStatusCode = 404
     throw err
 }
-const Match = await bcrypt.compare(password,user.password)
-console.log(Match)
-if(!Match){
+const match = await bcrypt.compare(password , user.password)
+console.log(password)
+console.log(user.password)
+console.log(await bcrypt.compare(password , user.password),"password")
+if(match){
     const err =  new Error ("Password is not Correct");
     err.httpStatusCode=401
     throw err
@@ -72,26 +87,19 @@ if(!Match){
     return user
 }
 }
-// companySchema.pre("save",async function(next){
-//     const user = this
-//     if(user.isModified('password')){
-// user.password = awa(user.password, 8)
-//     }
-//     next()
-// })
 
-companySchema.methods.toJSON = function(){
-let object = this.toObject()
-// delete object.password,
-// delete object.token,
-delete object.__v
+companySchema.pre('save', async function (next) {
+    const user = this;
+    console.log(user)
+    if (user.isModified("password")) {
+      user.password = await bcrypt.hash(user.password, 10);
+    }
+    next();
+  });
 
 
-return object
-}
 
-
-const Model = mongoose.model('login',companySchema )
+const Model = mongoose.model('logins',companySchema )
 module.exports = Model
 
 
