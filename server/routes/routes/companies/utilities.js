@@ -3,17 +3,9 @@ const ProfileSchema = require("./login/schema")
 
 const createToken = async (user) =>{
 try{
-    console.log(user,"hello")
-
-const token = await generateToken({_id:user._id})
+ const token = await generateToken({_id:user._id})
 const newUser = await ProfileSchema.findById(user._id)
-
-
-
-console.log(newUser,"aleks")
-console.log(token, "eriseld")
 newUser.token=token
-console.log( process.env.SECRET_JWT)
 await newUser.save({ validateBeforeSave: false})
 return {token}
 }catch(err){

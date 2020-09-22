@@ -1,7 +1,7 @@
 const express = require("express")
 const {notFound, badRequest,newDefinedError,otherGenericError} = require("./errorHeandlers")
 const cors = require("cors")
-const login = require("./routes/routes/companys/login")
+const login = require("./routes/routes/companies/login")
 const port = process.env.PORT
 const mongoose = require("mongoose")
 const name = process.env.DATABASENAME
@@ -20,7 +20,8 @@ server.use(otherGenericError)
 server.use("/login", login)
 
 
-mongoose.connect(`mongodb+srv://${name}:${password}@${mainDatabase}.anpmf.mongodb.net/${database}`,
+mongoose
+.connect(`mongodb+srv://${name}:${password}@${mainDatabase}.anpmf.mongodb.net/${database}`,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

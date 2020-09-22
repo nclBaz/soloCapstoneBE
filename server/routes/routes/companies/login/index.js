@@ -1,8 +1,8 @@
 const express = require("express")
 const schema = require("./schema")
 const q2m = require("query-to-mongo")
-const {User} = require("../midelware")
-const {createToken} = require("../utils")
+const {User} = require("../middleware")
+const {createToken} = require("../utilities")
 
 
 const companyRoute = express.Router()
@@ -41,13 +41,7 @@ res.send("deleted")
     console.log(err)
     next(err)
 }
-
-
-
 })
-
-
-
 
 companyRoute.post("/login", async(req,res,next)=>{
 try{
@@ -70,29 +64,21 @@ res.send("loged in")
 
 companyRoute.post("/logout", User , async(req,res,next)=>{
 try{
-
 const user = req.user;
 user.token='';
 await user.save({validateBeforeSave:false})
-
 res.cookie("nothing",user.token)
-   
 res.send("ok")  
-
 }catch(err){
     console.log(err)
     next(err)
 }
-
-
-
 })
 
 
 companyRoute.post("/register", async(req,res,next)=>{
 try{
     const data = req.body
-    console.log(req.body)
     const newData = new schema(data)
     await newData.save()
     res.send("data aded")
@@ -101,9 +87,4 @@ try{
     console.log(err)
 }
 })
-
-
-
-
-
 module.exports= companyRoute
