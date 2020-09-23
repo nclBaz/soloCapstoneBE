@@ -2,6 +2,7 @@ const {Schema} = require("mongoose")
 const mongoose = require("mongoose")
 const validator = require("validator")
 const bcrypt = require("bcryptjs")
+const {companyposts} = require("../login/schema")
 
 const companySchema = new Schema(
     {
@@ -18,8 +19,12 @@ minlength:[4,"name should be at least 4 character"]
 },
 surname:{
 type:String,
-// required:true,
+required:true,
 minlength:[4,"surname should be at least 4 character"]
+},
+location:{
+    type:String,
+    required:true
 },
 email:{
     type:String,
@@ -47,6 +52,7 @@ password:{
     required:true,
     minlength:[8,"password should be at least 8 character"]  
     },
+    jobOffers: [{ type: Schema.Types.ObjectId, ref:"companyposts"}],
 token:{
     type:String
 }
@@ -54,6 +60,12 @@ token:{
 
 {timestamps:true}
 )
+
+// companySchema.static("jobOffers", async function(id){
+//     const jobOffers = awa
+// })
+
+
 companySchema.methods.toJSON = function(){
     let object = this.toObject()
     delete object.password,
@@ -99,7 +111,7 @@ companySchema.pre('save', async function (next) {
 
 
 
-const Model = mongoose.model('logins',companySchema )
+const Model = mongoose.model("logins",companySchema )
 module.exports = Model
 
 

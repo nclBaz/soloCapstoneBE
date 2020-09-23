@@ -3,6 +3,7 @@ const schema = require("./schema")
 const q2m = require("query-to-mongo")
 const {User} = require("../middleware")
 const {createToken} = require("../utilities")
+const postSchema = require("../post/schema")
 
 
 const companyRoute = express.Router()
@@ -17,6 +18,16 @@ res.send(data)
     console.log(err)
 }
 })
+companyRoute.get("/jobs",User, async(req,res,next)=>{
+    try{
+       const data = await postSchema.find({jobOffers:req.user._id})
+    res.send(data)
+    
+    }catch(err){
+        next(err)
+        console.log(err)
+    }
+    })
 
 companyRoute.put("/edit",User,async(req,res,next)=>{
 try{
@@ -36,6 +47,7 @@ res.send(req.user)
 companyRoute.delete("/delete",User,async(req,res,next)=>{
 try{
 await schema.findByIdAndDelete({_id:req.user._id})
+await postSchema.findByIdAndDelete({jobOffers:req.user._id})
 res.send("deleted")
 }catch(err){
     console.log(err)

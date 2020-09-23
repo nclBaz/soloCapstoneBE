@@ -2,6 +2,7 @@ const express = require("express")
 const {notFound, badRequest,newDefinedError,otherGenericError} = require("./errorHeandlers")
 const cors = require("cors")
 const login = require("./routes/routes/companies/login")
+const post = require("./routes/routes/companies/post")
 const port = process.env.PORT
 const mongoose = require("mongoose")
 const name = process.env.DATABASENAME
@@ -18,6 +19,7 @@ server.use(badRequest)
 server.use(newDefinedError)
 server.use(otherGenericError)
 server.use("/login", login)
+server.use("/post", post)
 
 
 mongoose
