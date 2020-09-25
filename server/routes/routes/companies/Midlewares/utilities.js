@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken")
-const ProfileSchema = require("./login/schema")
+const ProfileSchema = require("../login/schema")
 
 const createToken = async (user) =>{
 try{

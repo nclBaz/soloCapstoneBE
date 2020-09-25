@@ -1,8 +1,8 @@
 const express = require("express")
 const schema = require("./schema")
 const q2m = require("query-to-mongo")
-const {User} = require("../middleware")
-const {createToken} = require("../utilities")
+const {User} = require("../Midlewares/middleware")
+const {createToken} = require("../Midlewares/utilities")
 const postSchema = require("../post/schema")
 
 
@@ -10,8 +10,9 @@ const companyRoute = express.Router()
 
 companyRoute.get("/profile",User, async(req,res,next)=>{
 try{
-   const data = req.user
-res.send(data)
+   const data = req.user._id
+   const profile = await schema.find({_id:data}).populate('jobOffers')
+res.send(profile)
 
 }catch(err){
     next(err)
@@ -93,7 +94,7 @@ try{
     const data = req.body
     const newData = new schema(data)
     await newData.save()
-    res.send("data aded")
+    res.send("new User is created")
 }catch(err){
     next(err)
     console.log(err)

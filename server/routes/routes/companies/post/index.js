@@ -1,6 +1,6 @@
 const express = require("express")
 const postSchema = require("./schema")
-const {User} = require("../middleware")
+const {User} = require("../Midlewares/middleware")
 const q2m = require("query-to-mongo")
 
 
@@ -52,7 +52,7 @@ postRoute.post("/newPost",User,async(req,res,next)=>{
 try{
 const user = req.user.id
 const post = req.body
-const newPost =  new postSchema({...post, jobOffers:user})
+const newPost =  new postSchema({ jobOffers:user,...post})
 await newPost.save()
 res.send("post has been sent")
 }catch(err){

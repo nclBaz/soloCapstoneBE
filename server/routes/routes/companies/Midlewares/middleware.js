@@ -1,5 +1,5 @@
 const {verifyToken} = require("./utilities")
-const ProfileSchema = require("./login/schema")
+const ProfileSchema = require("../login/schema")
 
 const User = async(req,res,next)=>{
 try{

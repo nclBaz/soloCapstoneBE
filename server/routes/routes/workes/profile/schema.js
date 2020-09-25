@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs")
 
 const profile= new Schema(
     {
-  username:{
+username:{
       type:String,
       required:true
   },      
@@ -38,6 +38,10 @@ password:{
 type:String,
 required:true
 },
+proffesion:[{
+type:String,
+required:[true,"At least one proffesion is required"]
+}],
 about:{
     type:String,
     required:true
@@ -45,6 +49,9 @@ about:{
 location:{
     type:String,
     required:true
+},
+token:{
+    type:String
 }
 },
 {timestamps:true}
@@ -55,8 +62,6 @@ profile.methods.toJSON = function(){
     delete object.token,
     delete object.__v
     
-    
-    
     return object
     }
     
@@ -64,17 +69,13 @@ profile.methods.toJSON = function(){
 profile.statics.findByCredentials = async(email,password)=>{
 
     const user = await Model.findOne({email:email})
-    console.log(user,"data of user")
-    if(!user){
+  if(!user){
         const err = new Error ("Email is not Correct ")
         err.httpStatusCode = 404
         throw err
     }
     const match = await bcrypt.compare(password , user.password)
-    console.log(password)
-    console.log(user.password)
-    console.log(await bcrypt.compare(password , user.password),"password")
-    if(match){
+   if(match){
         const err =  new Error ("Password is not Correct");
         err.httpStatusCode=401
         throw err
@@ -92,7 +93,6 @@ profile.pre('save', async function (next) {
         next();
       });
     
-    
-      const Model = mongoose.model("workersprofile",profile )
-      module.exports = Model
+ const Model = mongoose.model("workersprofile",profile )
+  module.exports = Model
       
