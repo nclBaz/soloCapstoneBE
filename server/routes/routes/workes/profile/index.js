@@ -6,6 +6,9 @@ const {createToken} = require("../midlewares/utilities")
 const allCompanies =  require("../../companies/login")
 const companiesPost = require("../../companies/post")
 const workersRoute = express.Router()
+
+
+
 workersRoute.get("/allProfiles",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
@@ -23,6 +26,8 @@ res.status(404).send("the profiles doesn't exist")
     console.log(error)
 }
 })
+
+
 workersRoute.get("/allCompanies",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
@@ -100,10 +105,6 @@ res.send("Deleted")
     next(err)
     console.log(err)
 }
-
-
-
-
 })
 
 

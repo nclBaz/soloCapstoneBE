@@ -4,6 +4,7 @@ const cors = require("cors")
 const login = require("./routes/routes/companies/login")
 const post = require("./routes/routes/companies/post")
 const profileWorker = require("./routes/routes/workes/profile")
+const education = require("./routes/routes/workes/education")
 const port = process.env.PORT
 const mongoose = require("mongoose")
 const name = process.env.DATABASENAME
@@ -22,6 +23,7 @@ server.use(otherGenericError)
 server.use("/login", login)
 server.use("/post", post)
 server.use("/profile",profileWorker)
+server.use("/education", education)
 
 
 mongoose

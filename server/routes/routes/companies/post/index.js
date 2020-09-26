@@ -51,6 +51,7 @@ res.status(201).send(findPost)
 postRoute.post("/newPost",User,async(req,res,next)=>{    
 try{
 const user = req.user.id
+console.log(user)
 const post = req.body
 const newPost =  new postSchema({ jobOffers:user,...post})
 await newPost.save()
