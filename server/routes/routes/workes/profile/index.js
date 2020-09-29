@@ -12,7 +12,7 @@ const workersRoute = express.Router()
 workersRoute.get("/allProfiles",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
-const allProfiles = await schema()
+const allProfiles = await schema().populate('skills').populate('education')
 .find(query.criteria,query.options.fields)
 .skip(query.options.skip)
 .limit(query.options.limit)
@@ -31,7 +31,7 @@ res.status(404).send("the profiles doesn't exist")
 workersRoute.get("/allCompanies",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
-const allCompanies = await allCompanies()
+const allCompanies = await allCompanies().populate('jobOffers')
 .find(query.criteria,query.options.fields)
 .skip(query.options.skip)
 .limit(query.options.limit)
@@ -59,21 +59,6 @@ res.status(404).send("Profile does not exist")
     console.log(error)
 }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 workersRoute.get("/profile",User,async(req,res,next)=>{
 try{
     const user = req.user
@@ -111,9 +96,10 @@ res.send("Deleted")
 
 
 
-workersRoute.post("/login",async(res,req,next)=>{
+workersRoute.post("/login",async(req,res,next)=>{
 try{
 const {email,password} = req.body
+console.log(email,"hellllloooooooo")
 const user = await schema.findByCredentials(email,password)
 if(user){
     const token = await createToken(user)

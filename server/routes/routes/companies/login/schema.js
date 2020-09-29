@@ -52,7 +52,7 @@ password:{
     required:true,
     minlength:[8,"password should be at least 8 character"]  
     },
-    jobOffers: [{ type: Schema.Types.ObjectId, ref:"companyposts"}],
+    jobOffers: [{ type: Schema.Types.ObjectId, ref:'companyposts'}],
 token:{
     type:String
 }
@@ -88,10 +88,10 @@ if(!user){
     throw err
 }
 const match = await bcrypt.compare(password , user.password)
-console.log(password)
-console.log(user.password)
-console.log(await bcrypt.compare(password , user.password),"password")
-if(match){
+// console.log(password)
+// console.log(user.password)
+// console.log(await bcrypt.compare(password , user.password),"password")
+if(!match){
     const err =  new Error ("Password is not Correct");
     err.httpStatusCode=401
     throw err

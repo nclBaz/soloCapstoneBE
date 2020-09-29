@@ -12,23 +12,41 @@ companyRoute.get("/profile",User, async(req,res,next)=>{
 try{
    const data = req.user._id
    const profile = await schema.find({_id:data}).populate('jobOffers')
-res.send(profile)
-
+   res.send(profile)
 }catch(err){
     next(err)
     console.log(err)
 }
 })
-companyRoute.get("/jobs",User, async(req,res,next)=>{
-    try{
-       const data = await postSchema.find({jobOffers:req.user._id})
-    res.send(data)
+
+companyRoute.get("/allProfiles",User,async(req,res,next)=>{
+try{
+    const allProfiles = await schema.find().populate('jobOffers')
+res.send(allProfiles)
+
+}catch(error){
+    next(error)
+    console.log(error)
+
+}
+
+
+
+
+})
+
+
+
+// companyRoute.get("/jobs",User, async(req,res,next)=>{
+//     try{
+//        const data = await postSchema.find({jobOffers:req.user._id})
+//     res.send(data)
     
-    }catch(err){
-        next(err)
-        console.log(err)
-    }
-    })
+//     }catch(err){
+//         next(err)
+//         console.log(err)
+//     }
+//     })
 
 companyRoute.put("/edit",User,async(req,res,next)=>{
 try{

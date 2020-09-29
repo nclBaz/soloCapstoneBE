@@ -50,6 +50,12 @@ location:{
     type:String,
     required:true
 },
+education:[{
+    type:Schema.Types.ObjectId, ref:'education'
+}],
+skills:[{
+type:Schema.Types.ObjectId, ref:'skills'
+}],
 token:{
     type:String
 }
@@ -75,7 +81,7 @@ profile.statics.findByCredentials = async(email,password)=>{
         throw err
     }
     const match = await bcrypt.compare(password , user.password)
-   if(match){
+   if(!match){
         const err =  new Error ("Password is not Correct");
         err.httpStatusCode=401
         throw err

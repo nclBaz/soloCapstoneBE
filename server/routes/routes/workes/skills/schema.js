@@ -18,5 +18,6 @@ type:String,
 }
 )
 
-const Model = mongoose.model("education", schema)
+
+const Model = mongoose.model("skills", schema)
 module.exports= Model

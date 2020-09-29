@@ -43,6 +43,11 @@ const _id = req.user._id
 const post = req.body
 const newPost = new schema({profileId:_id, post})
 const data =  await newPost.save() 
+
+const addToProfile = await profileSchema.findById({_id:_id })
+const education = addToProfile.education
+education.push(data._id)
+await addToProfile.save({validateBeforeSave:false})
 res.status(201).send("Data aded")
 }catch(error){
     next(error)
