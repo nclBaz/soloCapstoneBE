@@ -4,9 +4,14 @@ const q2m = require("query-to-mongo")
 const {User} = require("../Midlewares/middleware")
 const {createToken} = require("../Midlewares/utilities")
 const postSchema = require("../post/schema")
-
-
+const passport = require("passport")
+const multer = require("multer")
+const fs = require("fs-extra")
+const port = process.env.PORT
+const upload = multer()
+const path = require("path")
 const companyRoute = express.Router()
+
 
 companyRoute.get("/profile",User, async(req,res,next)=>{
 try{
@@ -18,7 +23,6 @@ try{
     console.log(err)
 }
 })
-
 companyRoute.get("/allProfiles",User,async(req,res,next)=>{
 try{
     const allProfiles = await schema.find().populate('jobOffers')
@@ -27,26 +31,46 @@ res.send(allProfiles)
 }catch(error){
     next(error)
     console.log(error)
-
 }
+})
+companyRoute.post("/upload",User,upload.single("image"),async(req,res,next)=>{
+try{
+const image = path.join(__dirname,"../companyImage")
+await fs.writeFile(
+    path.join(
+        image,
+        req.user._id +
+        req.file.originalname
+    ),
+    req.file.buffer,
+    console.log(req.file.buffer)
+);
 
 
+const obj = {
+image : fs.readFileSync(
+    path.join(
+        __dirname 
+        +
+         "/images/" 
+         +
+          req.user._id 
+          +
+          req.file.originalname
+    )
+)
+}
+const newImage = await schema.findByIdAndUpdate({_id:req.user._id, validateBeforeSave:false, obj})
+res.send("image aded")
 
-
+}catch(error){
+    next(error)
+    console.log(error)
+}
 })
 
 
 
-// companyRoute.get("/jobs",User, async(req,res,next)=>{
-//     try{
-//        const data = await postSchema.find({jobOffers:req.user._id})
-//     res.send(data)
-    
-//     }catch(err){
-//         next(err)
-//         console.log(err)
-//     }
-//     })
 
 companyRoute.put("/edit",User,async(req,res,next)=>{
 try{
@@ -118,4 +142,32 @@ try{
     console.log(err)
 }
 })
+
+
+companyRoute.get('/auth/linkedin', passport.authenticate('linkedin'));
+
+companyRoute.get(
+  '/auth/linkedin/callback',
+  passport.authenticate('linkedin', { failureRedirect: '/login' }),
+  async (req, res, next) => {
+    try {
+      const token = req.user.token;
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+
+    //   res.writeHead(301, {
+    //     Location:
+    //     //   process.env.FRONTEND_URL + '/profiles/me?' + req.user.username,
+    //   });
+      res.end();
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+);
 module.exports= companyRoute

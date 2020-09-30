@@ -5,6 +5,7 @@ const {User} = require("../midlewares/middleware")
 const {createToken} = require("../midlewares/utilities")
 const allCompanies =  require("../../companies/login")
 const companiesPost = require("../../companies/post")
+const passport = require("passport")
 const workersRoute = express.Router()
 
 
@@ -127,6 +128,34 @@ res.send("new User is created")
     console.log(err)
 }
 })
+workersRoute.get('/auth/linkedin', passport.authenticate('linkedin',{ state: 'SOME STATE'  }));
+
+workersRoute.get(
+  '/auth/linkedin/callback',
+  passport.authenticate('linkedin', { failureRedirect: '/login' }),
+  async (req, res, next) => {
+    try {
+        console.log("hellllo im here")
+          const token = req.user.token;
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'none',
+        secure: true,
+      });
+      res.send("helllo welcome")
+
+    //   res.writeHead(301, {
+    //     Location:
+    //       process.env.FRONTEND_URL + '/profiles/me?' + req.user.username,
+    //   });
+      res.end();
+    } catch (error) {
+      console.log(error);
+      next(error);
+    }
+  }
+);
 
 
 

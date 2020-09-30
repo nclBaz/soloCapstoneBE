@@ -36,7 +36,7 @@ email:{
 },
 password:{
 type:String,
-required:true
+// required:true
 },
 proffesion:[{
 type:String,
@@ -44,11 +44,11 @@ required:[true,"At least one proffesion is required"]
 }],
 about:{
     type:String,
-    required:true
+    // required:true
 },
 location:{
     type:String,
-    required:true
+    // required:true
 },
 education:[{
     type:Schema.Types.ObjectId, ref:'education'
@@ -56,6 +56,9 @@ education:[{
 skills:[{
 type:Schema.Types.ObjectId, ref:'skills'
 }],
+image:{
+type:String
+},
 token:{
     type:String
 }

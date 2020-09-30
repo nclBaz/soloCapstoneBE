@@ -29,7 +29,8 @@ skillsLearned:{
 profileId:{
 type:String,
 }
-}
+},
+{timestamps:true}
 )
 
 const Model = mongoose.model("education", schema)

@@ -11,15 +11,27 @@ const name = process.env.DATABASENAME
 const password = process.env.PASSWORD
 const database = process.env.DATABASE
 const mainDatabase = process.env.MAINDATABASE
+
 const cookieParser = require("cookie-parser")
+
+require('./routes/routes/companies/oauth')
+require('./routes/routes/workes/oauth')
+
+const passport = require('passport')
+
 const server = express()
+
 server.use(cors())
+server.use(passport.initialize())
+server.use(passport.session())
 server.use(express.json())
 server.use(cookieParser())
+
 server.use(notFound)
 server.use(badRequest)
 server.use(newDefinedError)
 server.use(otherGenericError)
+
 server.use("/login", login)
 server.use("/post", post)
 server.use("/profile",profileWorker)

@@ -2,29 +2,32 @@ const {Schema} = require("mongoose")
 const mongoose = require("mongoose")
 const validator = require("validator")
 const bcrypt = require("bcryptjs")
-const {companyposts} = require("../login/schema")
+
 
 const companySchema = new Schema(
     {
 companyName:{
 type:String,
-required:true,
-minlength:[4,"Company  name should be at least 4 character"]
+// required:true,
+// minlength:[4,"Company  name should be at least 4 character"]
 },
 name:{
 type:String,
 required:true,
-minlength:[4,"name should be at least 4 character"]
+// minlength:[4,"name should be at least 4 character"]
 
 },
 surname:{
 type:String,
 required:true,
-minlength:[4,"surname should be at least 4 character"]
+// minlength:[4,"surname should be at least 4 character"]
 },
 location:{
     type:String,
-    required:true
+    // required:true
+},
+image:{
+    type:String
 },
 email:{
     type:String,
@@ -49,8 +52,8 @@ phoneNumber:{
     },
 password:{
     type:String,
-    required:true,
-    minlength:[8,"password should be at least 8 character"]  
+    // required:true,
+    // minlength:[8,"password should be at least 8 character"]  
     },
     jobOffers: [{ type: Schema.Types.ObjectId, ref:'companyposts'}],
 token:{
@@ -60,11 +63,6 @@ token:{
 
 {timestamps:true}
 )
-
-// companySchema.static("jobOffers", async function(id){
-//     const jobOffers = awa
-// })
-
 
 companySchema.methods.toJSON = function(){
     let object = this.toObject()
@@ -88,9 +86,9 @@ if(!user){
     throw err
 }
 const match = await bcrypt.compare(password , user.password)
-// console.log(password)
-// console.log(user.password)
-// console.log(await bcrypt.compare(password , user.password),"password")
+console.log(password)
+console.log(user.password)
+console.log(await bcrypt.compare(password , user.password),"password")
 if(!match){
     const err =  new Error ("Password is not Correct");
     err.httpStatusCode=401
@@ -102,7 +100,7 @@ if(!match){
 
 companySchema.pre('save', async function (next) {
     const user = this;
-    console.log(user)
+    console.log(user,"helllooooooo")
     if (user.isModified("password")) {
       user.password = await bcrypt.hash(user.password, 10);
     }
