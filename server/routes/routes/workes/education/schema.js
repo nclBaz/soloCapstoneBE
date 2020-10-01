@@ -9,7 +9,10 @@ required:true,
 },
 startDate:{
 type:String,
-required:true
+// required:true
+},
+image:{
+type:String
 },
 endDate:{
     type:String,

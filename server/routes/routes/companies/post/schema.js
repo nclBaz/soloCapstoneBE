@@ -25,6 +25,9 @@ type:String,
 required:true,
 minlength:[4,"surname should be at least 4 character"]
 },
+image:{
+type:String
+},
 requirments:[{
 type:String,
 required:true,

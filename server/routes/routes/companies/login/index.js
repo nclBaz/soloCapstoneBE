@@ -4,13 +4,29 @@ const q2m = require("query-to-mongo")
 const {User} = require("../Midlewares/middleware")
 const {createToken} = require("../Midlewares/utilities")
 const postSchema = require("../post/schema")
+const workerSchema = require("../../workes/profile/schema")
 const passport = require("passport")
 const multer = require("multer")
 const fs = require("fs-extra")
 const port = process.env.PORT
-const upload = multer()
+const upload = multer({})
 const path = require("path")
 const companyRoute = express.Router()
+const { join } = require("path")
+const cloudinary = require("cloudinary").v2 
+const streamifier = require("streamifier")
+const createPdf = require("pdfkit")
+const axios = require("axios")
+
+
+
+
+cloudinary.config({
+    cloud_name: process.env.cloud_name,
+  api_key:process.env.api_key,
+  api_secret: process.env.api_secret
+})
+
 
 
 companyRoute.get("/profile",User, async(req,res,next)=>{
@@ -33,35 +49,72 @@ res.send(allProfiles)
     console.log(error)
 }
 })
+companyRoute.post("/uploadImage",User,upload.single("image"),async(req,res,next)=>{
+try{
+if(req.file){
+    const cloud_upload = cloudinary.uploader.upload_stream(
+        {
+            folder:'companyImages'
+        },
+        async(err,data)=>{
+            if(!err){
+                req.user.image = data.secure_url
+             await req.user.save({ validateBeforeSave: false })
+            res.status(201).send("image is aded")
+            }
+        }
+    )
+    streamifier.createReadStream(req.file.buffer).pipe(cloud_upload)
+
+}else{
+    const err = new Error()
+    err.httpStatusCode = 400
+    err.message= ' image is missing';
+next(err)
+}
+}catch(error){
+    next(error)
+    console.log(error)
+}
+
+
+
+})
+
+
+
 companyRoute.post("/upload",User,upload.single("image"),async(req,res,next)=>{
 try{
-const image = path.join(__dirname,"../companyImage")
+const image = path.join(__dirname,"../../allImages/companyImages")
+console.log(req.user._id)
 await fs.writeFile(
-    path.join(
-        image,
+    path.join(image,
         req.user._id +
         req.file.originalname
     ),
     req.file.buffer,
-    console.log(req.file.buffer)
+    
 );
 
 
 const obj = {
-image : fs.readFileSync(
+image : await  fs.readFileSync(
     path.join(
-        __dirname 
-        +
-         "/images/" 
-         +
-          req.user._id 
+        req.user._id 
           +
           req.file.originalname
-    )
+    ),
+    
 )
 }
-const newImage = await schema.findByIdAndUpdate({_id:req.user._id, validateBeforeSave:false, obj})
-res.send("image aded")
+console.log(obj)
+const newImage = await schema.findByIdAndUpdate({_id:req.user._id, validateBeforeSave:false},obj)
+if(newImage){
+    res.send("Image aded")}
+    else{
+        res.send("couldent find")
+    }
+
 
 }catch(error){
     next(error)
@@ -87,6 +140,12 @@ res.send(req.user)
 })
 
 
+
+
+
+
+
+
 companyRoute.delete("/delete",User,async(req,res,next)=>{
 try{
 await schema.findByIdAndDelete({_id:req.user._id})
@@ -97,6 +156,175 @@ res.send("deleted")
     next(err)
 }
 })
+
+companyRoute.get('/:_id/pdf',  async (req, res, next) => {
+    try {
+      const profile = await workerSchema.findOne({
+        _id: req.params._id,
+      }).populate('workeExperience','education','skills')
+      console.log(profile)
+ 
+      const doc = new createPdf();
+      const url = profile.image;
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename=${profile.name} : ${profile.surname}.pdf`
+      );
+  
+      if (url.length > 0) {
+        const response = await axios.get(url, {
+          responseType: 'arraybuffer',
+        });
+        const img = new Buffer(response.data, 'base64');
+        doc.image(img, 50, 50, {
+          fit: [100, 100],
+        });
+        console.log(response.data,"new response")
+        console.log(img , "this.is image")
+      }
+      console.log(url.length)
+  
+      doc.font('Helvetica-Bold');
+      doc.fontSize(20);
+  
+      doc.text(`${profile.name} ${profile.surname}`,100 , 50, {
+        width: 410,
+        align: 'center',
+      });
+      doc.fontSize(12);
+      doc.font('Helvetica');
+      doc.text(
+        `
+     Email: ${profile.email}
+
+     Location: ${profile.location}
+
+     Bio:  ${profile.position}`,
+        260,
+        80,
+        {
+          align: 'left',
+        },
+        
+      );
+      doc.fontSize(18)
+      doc.text(
+          `About Me`,
+           110, 200, {
+            width: 400,
+            align: 'center',
+          
+          })
+          doc.fontSize(12)
+      doc.text(
+          `      
+        ${profile.about}`
+        , 100, 210, {
+            width: 400,
+            align: 'center',
+          
+          })
+      doc.fontSize(18);
+      doc.text('Education', 100, 400, {
+        width: 410,
+        align: 'center',
+      });
+      doc.fontSize(12);
+      const education = async () => {
+        profile.education.map(
+           (education) =>
+            doc.text(`
+            Education
+            SchoolName: ${education.schoolName}
+            Image: ${education.image}
+            Started: ${education.startDate}
+            Finished:${education.endDate}
+            Description: ${education.description}
+            About:${education.about}
+            SkillLearned:  ${education.skillsLearned}
+            -------------------------------------------------------
+          `),
+          {
+            width: 410,
+            align: 'center',
+          }
+        );
+      };
+      await education();
+
+      doc.fontSize(18);
+      doc.text('Experiences', 100, 750, {
+        width: 410,
+        align: 'center',
+      });
+      doc.fontSize(12);
+      const workExperience = async () => {
+        profile.workExperience.map(
+           (work) =>
+            doc.text(`
+             Experiences
+            Worked In: ${work.workExperience}
+            Started: ${work.started}
+            Finished:  ${work.finished}
+            Description: ${work.description}
+
+            -------------------------------------------------------
+          `),
+          {
+            width: 410,
+            align: 'center',
+          }
+        );
+      };
+      await workExperience();
+      doc.fontSize(18);
+      doc.text('Skills', 100, 350, {
+        width: 410,
+        align: 'center',
+      });
+      doc.fontSize(12);
+      const skills = async () => {
+        profile.skills.map(
+           (skill) =>
+            doc.text(`
+            Skills
+            Skill: ${skill.skillName}
+            -------------------------------------------------------
+          `),
+          {
+            width: 410,
+            align: 'center',
+          }
+        );
+      };
+      await skills();
+
+  
+
+    
+  
+    //   let grad = doc.linearGradient(100, 0, 350, 100);
+    //   grad.stop(0, '#0077B5').stop(1, '#004451');
+  
+    //   doc.rect(0, 0, 70, 1000);
+    //   doc.fill(grad);
+  
+      doc.pipe(res);
+  
+      doc.end();
+    } catch (error) {
+      next(error);
+    }
+  });
+
+
+
+
+
+
+
+
+
 
 companyRoute.post("/login", async(req,res,next)=>{
 try{

@@ -9,7 +9,10 @@ const profile= new Schema(
 username:{
       type:String,
       required:true
-  },      
+  }, 
+  position:{
+type:String
+  },     
 name:{
     type:String,
     required:true,
@@ -17,6 +20,10 @@ name:{
 surname:{
     type:String,
     required:true
+},
+aboutMe:{
+type:String,
+default:"nothing to show"
 },
 email:{
     type:String,
@@ -38,10 +45,7 @@ password:{
 type:String,
 // required:true
 },
-proffesion:[{
-type:String,
-required:[true,"At least one proffesion is required"]
-}],
+
 about:{
     type:String,
     // required:true
@@ -50,6 +54,9 @@ location:{
     type:String,
     // required:true
 },
+workExperience:[{
+type:Schema.Types.ObjectId, ref:'workExperience'
+}],
 education:[{
     type:Schema.Types.ObjectId, ref:'education'
 }],

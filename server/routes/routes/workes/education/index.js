@@ -2,6 +2,15 @@ const express = require("express")
 const schema  = require("./schema")
 const {User} = require("../midlewares/middleware")
 const q2m = require("query-to-mongo")
+const cloudinary = require("cloudinary").v2 
+const streamifier = require("streamifier")
+const multer = require("multer")
+const upload = multer({})
+cloudinary.config({
+    cloud_name: process.env.cloud_name,
+  api_key:process.env.api_key,
+  api_secret: process.env.api_secret
+})
 
 const educationRoute = express.Router()
 educationRoute.get("/allEducation",User,async(req,res,next)=>{
@@ -24,6 +33,39 @@ educationRoute.get("/allEducation/:_id",User,async(req,res,next)=>{
     console.log(error)
     }
     })
+
+
+    educationRoute.post("/uploadImage/:_id",User,upload.single("image"),async(req,res,next)=>{
+        try{
+        if(req.file){
+            const cloud_upload = cloudinary.uploader.upload_stream(
+                {
+                    folder:'educationImage'
+                },
+                async(err,data)=>{
+                    if(!err){
+                        const user = await schema.findById({_id:req.params._id})
+                        user.image = data.secure_url
+                     await user.save()
+                    res.status(201).send("image is aded")
+                    }
+                }
+            )
+            streamifier.createReadStream(req.file.buffer).pipe(cloud_upload)
+        
+        }else{
+            const err = new Error()
+            err.httpStatusCode = 400
+            err.message= ' image is missing';
+        next(err)
+        }
+        }catch(error){
+            next(error)
+            console.log(error)
+        }
+    
+    })
+    
 
 
 
@@ -54,6 +96,11 @@ res.status(201).send("Data aded")
     console.log(error)
 }
 })
+
+
+
+
+
 
 
 educationRoute.put("/edit/:_id",User,async(req,res,next)=>{

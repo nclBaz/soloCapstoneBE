@@ -27,7 +27,7 @@ location:{
     // required:true
 },
 image:{
-    type:String
+    type:Schema.Types.Mixed
 },
 email:{
     type:String,
