@@ -23,7 +23,7 @@ cloudinary.config({
 workersRoute.get("/allProfiles",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
-const allProfiles = await schema().populate('skills').populate('education')
+const allProfiles = await schema().populate('skills').populate('education').populate('workExperience')
 .find(query.criteria,query.options.fields)
 .skip(query.options.skip)
 .limit(query.options.limit)
@@ -60,7 +60,9 @@ res.send("THe companies does not exist")
 workersRoute.get("/singleProfile/:_id",User,async(req,res,next)=>{
 try{
 const _id = req.params._id
-const profile = await schema.findById({_id:_id})
+const profile = await schema.findById({_id:_id}).populate('workExperience')
+.populate('education')
+.populate('skills')
 if(profile)
     res.send(profile)
 else

@@ -18,10 +18,10 @@ res.send(skill)
 
 
 
-skillsRoute.post("/postSkill"/User,async(req,res,next)=>{
+skillsRoute.post("/postSkill",User,async(req,res,next)=>{
 try{
 const _id = req.user._id
-const post = new schema({...req.body})
+const post = new schema({profileId:_id,...req.body})
 const savePost = await post.save()
 
 const addToProfile = await profileSchema.findById({_id:_id })

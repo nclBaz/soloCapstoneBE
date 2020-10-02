@@ -83,45 +83,6 @@ next(err)
 
 
 
-companyRoute.post("/upload",User,upload.single("image"),async(req,res,next)=>{
-try{
-const image = path.join(__dirname,"../../allImages/companyImages")
-console.log(req.user._id)
-await fs.writeFile(
-    path.join(image,
-        req.user._id +
-        req.file.originalname
-    ),
-    req.file.buffer,
-    
-);
-
-
-const obj = {
-image : await  fs.readFileSync(
-    path.join(
-        req.user._id 
-          +
-          req.file.originalname
-    ),
-    
-)
-}
-console.log(obj)
-const newImage = await schema.findByIdAndUpdate({_id:req.user._id, validateBeforeSave:false},obj)
-if(newImage){
-    res.send("Image aded")}
-    else{
-        res.send("couldent find")
-    }
-
-
-}catch(error){
-    next(error)
-    console.log(error)
-}
-})
-
 
 
 
@@ -298,16 +259,8 @@ companyRoute.get('/:_id/pdf',  async (req, res, next) => {
         );
       };
       await skills();
-
   
-
-    
-  
-    //   let grad = doc.linearGradient(100, 0, 350, 100);
-    //   grad.stop(0, '#0077B5').stop(1, '#004451');
-  
-    //   doc.rect(0, 0, 70, 1000);
-    //   doc.fill(grad);
+ 
   
       doc.pipe(res);
   

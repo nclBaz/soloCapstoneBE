@@ -90,8 +90,12 @@ profile.statics.findByCredentials = async(email,password)=>{
         err.httpStatusCode = 404
         throw err
     }
+    
     const match = await bcrypt.compare(password , user.password)
-   if(!match){
+   console.log(match)
+   console.log(password)
+   console.log(user.password)
+    if(!match){
         const err =  new Error ("Password is not Correct");
         err.httpStatusCode=401
         throw err

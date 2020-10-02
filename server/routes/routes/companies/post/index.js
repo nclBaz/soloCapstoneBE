@@ -18,7 +18,7 @@ postRoute.get("/",User,async(req,res,next)=>{
     try{
         const allPosts = req.user._id
 const query = q2m(req.query)
-const post = await postSchema.find()
+const post = await postSchema.find().populate('allAplication')
 .find(query.criteria,query.options.fields)
 .skip(query.options.skip)
 .limit(query.options.limit)
@@ -35,7 +35,7 @@ else res.status(404).send("empty")
 postRoute.get("/singelPost/:_id", User, async(req,res,next)=>{
 try{ 
 const singelPost = req.params._id
-const findPost = await postSchema.find({_id:singelPost})
+const findPost = await postSchema.find({_id:singelPost}).populate('allAplication')
 console.log(findPost)
 res.status(201).send(findPost)
 }catch(err){
@@ -47,7 +47,7 @@ postRoute.post("/newPost",User,async(req,res,next)=>{
 try{
 const user = req.user.id
 const post = req.body
-const newPost =  new postSchema({ ...post})
+const newPost =  new postSchema({ ...post,useID:user})
 await newPost.save()
 
 const addToProfile = await profileSchema.findById({_id:user })

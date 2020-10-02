@@ -28,6 +28,9 @@ minlength:[4,"surname should be at least 4 character"]
 image:{
 type:String
 },
+userID:{
+  type:String
+},
 requirments:[{
 type:String,
 required:true,
@@ -35,9 +38,11 @@ required:true,
   
 benefites:[{
         type:String,
-    }] 
+    }], 
+
+allAplication:[{type:Schema.Types.ObjectId, ref:'workersprofile'}]
  },
-{timestamps:true}
+ {timestamps:true}
 )
 
 
