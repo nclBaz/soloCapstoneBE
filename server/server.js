@@ -27,11 +27,18 @@ const passport = require('passport')
 const allPaths = join(__dirname, "./routes/routes/allImages")
 const server = express()
 
+const readCookie = {
+  origin:process.env.App_Url,
+  credentials:true
+}
+
+
 server.use(cors())
+server.use(express.json())
 server.use(passport.initialize())
 server.use(passport.session())
-server.use(express.json())
 server.use(cookieParser())
+server.use(cors(readCookie))
 server.use(express.static(allPaths))
 server.use(notFound)
 server.use(badRequest)
