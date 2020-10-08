@@ -286,9 +286,9 @@ try{
 if(user){
 const token = await createToken(user)
 res.cookie('token',token.token,{
-httpOnly:true,
-secure:true,
-sameSite:'none'
+// httpOnly:true,
+// secure:true,
+// sameSite:true,
 })
 res.send("loged in")
 }
@@ -335,9 +335,9 @@ companyRoute.get(
       const token = req.user.token;
 
       res.cookie('token', token, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
+        // httpOnly: true,
+        // sameSite: 'none',
+        // secure: true,
       });
 
     //   res.writeHead(301, {

@@ -8,10 +8,11 @@ const profile= new Schema(
     {
 username:{
       type:String,
-      required:true
-  }, 
+      required:true,
+      }, 
   position:{
-type:String
+type:String,
+required:true,
   },     
 name:{
     type:String,
@@ -24,6 +25,7 @@ surname:{
 aboutMe:{
 type:String,
 default:"nothing to show"
+
 },
 email:{
     type:String,
@@ -43,16 +45,13 @@ email:{
 },
 password:{
 type:String,
-// required:true
+required:true
 },
 
-about:{
-    type:String,
-    // required:true
-},
+
 location:{
     type:String,
-    // required:true
+    required:true
 },
 workExperience:[{
 type:Schema.Types.ObjectId, ref:'workExperience'

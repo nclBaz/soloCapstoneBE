@@ -8,26 +8,18 @@ const companySchema = new Schema(
     {
 companyName:{
 type:String,
-// required:true,
-// minlength:[4,"Company  name should be at least 4 character"]
-},
-name:{
-type:String,
 required:true,
-// minlength:[4,"name should be at least 4 character"]
-
 },
-surname:{
-type:String,
-required:true,
-// minlength:[4,"surname should be at least 4 character"]
+aboutMe:{
+    type:String,
+    required:true,
 },
 location:{
     type:String,
-    // required:true
+    required:true
 },
 image:{
-    type:Schema.Types.Mixed
+    type:String
 },
 email:{
     type:String,
@@ -45,16 +37,10 @@ validator:async(value)=>{
 }
 }
     },
-phoneNumber:{
-    type:Number,
-    required:true,
-    minlength:[9,"number should be at least 9 character"]
-    },
 password:{
     type:String,
-    // required:true,
-    // minlength:[8,"password should be at least 8 character"]  
-    },
+    required:true,
+     },
     jobOffers: [{ type: Schema.Types.ObjectId, ref:'companyposts'}],
 token:{
     type:String

@@ -7,6 +7,7 @@ try{
 const newUser = await ProfileSchema.findById(user._id)
 newUser.token=token
 await newUser.save({ validateBeforeSave: false})
+// return {token}
 return {token}
 }catch(err){
     console.log(err)

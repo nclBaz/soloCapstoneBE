@@ -23,8 +23,8 @@ cloudinary.config({
 workersRoute.get("/allProfiles",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
-const allProfiles = await schema().populate('skills').populate('education').populate('workExperience')
-.find(query.criteria,query.options.fields)
+const allProfiles = await schema.find(query.criteria,query.options.fields).populate('skills').populate('education').populate('workExperience')
+
 .skip(query.options.skip)
 .limit(query.options.limit)
 .sort(query.options.sort)
@@ -147,10 +147,11 @@ console.log(email,"hellllloooooooo")
 const user = await schema.findByCredentials(email,password)
 if(user){
     const token = await createToken(user)
+    console.log("hello token",token.token,"this is token")
     res.cookie('token',token.token,{
-httpOnly:true,
-secure:true,
-sameSite:'none'
+// httpOnly:true,
+// secure:true,
+// sameSite:true,
     })
     res.send("loged in")
 }
@@ -165,7 +166,10 @@ try{
 const data = req.body
 const newData = new schema(data)
 await newData.save()
-res.send("new User is created")
+if(newData){
+res.send("new User is created")}else{
+    res.send("canot create")
+}
 }catch(err){
     next(err)
     console.log(err)
@@ -182,9 +186,9 @@ workersRoute.get(
           const token = req.user.token;
 
       res.cookie('token', token, {
-        httpOnly: true,
-        sameSite: 'none',
-        secure: true,
+        // httpOnly: true,
+        // sameSite: 'none',
+        // secure: true,
       });
       res.send("helllo welcome")
 

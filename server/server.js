@@ -31,14 +31,27 @@ const readCookie = {
   origin:process.env.App_Url,
   credentials:true
 }
-
-
+const whitelist = ["http://localhost:3000"]
+const corsOptions = {
+    origin: (origin, callback) => {
+        if (whitelist.indexOf(origin) !== -1 || !origin) {
+            callback(null, true)
+        } else {
+            callback(new Error("Not allowed by CORS"))
+        }
+    },
+    credentials: true,
+}
 server.use(cors())
+server.use(cookieParser())
+server.use(cors(readCookie))
+
+server.use(cors(corsOptions))
 server.use(express.json())
 server.use(passport.initialize())
 server.use(passport.session())
-server.use(cookieParser())
-server.use(cors(readCookie))
+
+
 server.use(express.static(allPaths))
 server.use(notFound)
 server.use(badRequest)
