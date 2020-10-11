@@ -80,6 +80,38 @@ next(err)
 
 
 })
+companyRoute.post("/companyImage",upload.single("image"),async(req,res,next)=>{
+  try{
+  if(req.file){
+      const cloud_upload = cloudinary.uploader.upload_stream(
+          {
+              folder:'companyImages'
+          },
+          async(err,data)=>{
+              if(!err){
+                  req.user.image = data.secure_url
+               await req.user.save({ validateBeforeSave: false })
+              res.status(201).send("image is aded")
+              }
+          }
+      )
+      streamifier.createReadStream(req.file.buffer).pipe(cloud_upload)
+  
+  }else{
+      const err = new Error()
+      err.httpStatusCode = 400
+      err.message= ' image is missing';
+  next(err)
+  }
+  }catch(error){
+      next(error)
+      console.log(error)
+  }
+  
+  
+  
+  })
+  
 
 
 

@@ -5,9 +5,8 @@ const validator = require("validator")
 
 const companySchema = new Schema(
     {
-  jobOffers:{
-      type:String,
-    
+  jobOffer:{
+      type:String,    
   },      
 jobPosition:{
 type:String,
@@ -30,6 +29,12 @@ type:String
 },
 userID:{
   type:String
+},
+companyName:{
+type:String
+},
+location:{
+type:String
 },
 requirments:[{
 type:String,

@@ -45,9 +45,9 @@ res.status(201).send(findPost)
 })
 postRoute.post("/newPost",User,async(req,res,next)=>{    
 try{
-const user = req.user.id
+const user = req.user
 const post = req.body
-const newPost =  new postSchema({ ...post,useID:user})
+const newPost =  new postSchema({ ...post,userID:user._id,companyName:user.companyName,location:user.location})
 await newPost.save()
 
 const addToProfile = await profileSchema.findById({_id:user })

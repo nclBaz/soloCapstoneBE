@@ -3,8 +3,8 @@ const schema = require("./schema")
 const q2m = require("query-to-mongo")
 const {User} = require("../midlewares/middleware")
 const {createToken} = require("../midlewares/utilities")
-const allCompanies =  require("../../companies/login")
-const companiesPost = require("../../companies/post")
+const allCompanies =  require("../../companies/login/schema")
+const companiesPost = require("../../companies/post/schema")
 const passport = require("passport")
 const workersRoute = express.Router()
 const cloudinary = require("cloudinary").v2 
@@ -42,13 +42,13 @@ res.status(404).send("the profiles doesn't exist")
 workersRoute.get("/allCompanies",User,async(req,res,next)=>{
 try{
 const query = q2m(req.query)
-const allCompanies = await allCompanies().populate('jobOffers')
-.find(query.criteria,query.options.fields)
+const all = await allCompanies.find(query.criteria,query.options.fields).populate('jobOffers')
 .skip(query.options.skip)
 .limit(query.options.limit)
 .sort(query.options.sort)
-if(allCompanies.length>0)
-res.send(allCompanies)
+console.log( await allCompanies.find(),"hellloooo")
+if(all.length>0)
+res.send(all)
 else
 res.send("THe companies does not exist")
 }catch(error){
@@ -56,6 +56,29 @@ res.send("THe companies does not exist")
     console.log(error)
 }
 })
+
+workersRoute.get("/allPostJobs",User,async(req,res,next)=>{
+    try{
+    const query = q2m(req.query)
+    const all = await companiesPost.find(query.criteria,query.options.fields).populate('jobOffers')
+    .skip(query.options.skip)
+    .limit(query.options.limit)
+    .sort(query.options.sort)
+    console.log( await companiesPost.find(),"hellloooo")
+    if(all.length>0)
+    res.send(all)
+    else
+    res.send("THe companies does not exist")
+    }catch(error){
+        next(error)
+        console.log(error)
+    }
+    })
+
+
+
+
+
 
 workersRoute.get("/singleProfile/:_id",User,async(req,res,next)=>{
 try{
@@ -82,6 +105,35 @@ res.send(user)
 }
 })
 workersRoute.post("/uploadImage",User,upload.single("image"),async(req,res,next)=>{
+    try{
+    if(req.file){
+        const cloud_upload = cloudinary.uploader.upload_stream(
+            {
+                folder:'workersImage'
+            },
+            async(err,data)=>{
+                if(!err){
+                    req.user.image = data.secure_url
+                 await req.user.save({ validateBeforeSave: false })
+                res.status(201).send("image is aded")
+                }
+            }
+        )
+        streamifier.createReadStream(req.file.buffer).pipe(cloud_upload)
+    
+    }else{
+        const err = new Error()
+        err.httpStatusCode = 400
+        err.message= ' image is missing';
+    next(err)
+    }
+    }catch(error){
+        next(error)
+        console.log(error)
+    }
+
+})
+workersRoute.post("/workerImage",upload.single("image"),async(req,res,next)=>{
     try{
     if(req.file){
         const cloud_upload = cloudinary.uploader.upload_stream(
