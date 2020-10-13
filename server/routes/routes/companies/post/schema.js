@@ -17,7 +17,12 @@ about:{
 type:String,
 required:true,
 minlength:[4,"name should be at least 4 character"]
-
+},
+salary:{
+type:String
+},
+type:{
+type:String
 },
 jobDescription:{
 type:String,

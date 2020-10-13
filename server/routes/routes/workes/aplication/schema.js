@@ -6,11 +6,10 @@ const aplicationSchema =  new Schema({
 userId:{
     type:String
 },
-postId:{
-    type:String
-},
+postId:[{type:Schema.Types.ObjectId, ref:'companyposts'}],
 answer:{
-    type:String
+    type:String,
+    default:"no answer",
 }
 })
 

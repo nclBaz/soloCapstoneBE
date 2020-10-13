@@ -7,7 +7,7 @@ const aplicationSchema = require("./schema")
 aplicationRoute.get("/getAllAplication",User,async(req,res,next)=>{
 try{
     const _id = req.user._id
-const allAplication = await aplicationSchema.find({userId:_id})
+const allAplication = await aplicationSchema.find({userId:_id}).populate('postId')
 console.log(allAplication)
 res.send(allAplication)
 }catch(err){
