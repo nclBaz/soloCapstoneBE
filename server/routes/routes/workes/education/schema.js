@@ -1,40 +1,35 @@
-const {Schema}  =  require("mongoose")
-const mongoose = require("mongoose")
+const { Schema } = require("mongoose");
+const mongoose = require("mongoose");
 
 const schema = new Schema(
-    {
-schoolName:{
-type:String,
-required:true,
-},
-startDate:{
-type:String,
-// required:true
-},
-image:{
-type:String
-},
-endDate:{
-    type:String,
+  {
+    schoolName: {
+      type: String,
+      required: true,
     },
-about:{
-    type:String,
-    required:true
-},
-description:{
-type:String,
-required:true,
-minlength:[50,"Text should be at least 50 character long"]
-},
-skillsLearned:{
-    type:String,
-},
-profileId:{
-type:String,
-}
-},
-{timestamps:true}
-)
+    startDate: {
+      type: String,
+      // required:true
+    },
+    image: {
+      type: String,
+    },
+    endDate: {
+      type: String,
+    },
+    about: {
+      type: String,
+      required: true,
+    },
+    skillsLearned: {
+      type: String,
+    },
+    profileId: {
+      type: String,
+    },
+  },
+  { timestamps: true }
+);
 
-const Model = mongoose.model("education", schema)
-module.exports= Model
+const Model = mongoose.model("education", schema);
+module.exports = Model;

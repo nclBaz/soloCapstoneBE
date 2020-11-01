@@ -3,12 +3,20 @@ const schema = require("../../companies/post/schema")
 const {User} = require("../midlewares/middleware")
 const aplicationRoute = express.Router()
 const aplicationSchema = require("./schema")
+const q2m = require('query-to-mongo')
 
 aplicationRoute.get("/getAllAplication",User,async(req,res,next)=>{
 try{
+const query = q2m(req.query)
     const _id = req.user._id
-const allAplication = await aplicationSchema.find({userId:_id}).populate('postId')
-console.log(allAplication)
+const allAplication = await aplicationSchema.find({userId:_id},query.criteria,query.options.fields).populate('postId')
+.skip(query.options.skip)
+.limit(query.options.limit)
+.sort({
+    dateOfCreation: -1,
+  });
+
+
 res.send(allAplication)
 }catch(err){
     next(err)
@@ -20,7 +28,7 @@ aplicationRoute.get("/getAplication/:_id",User,async(req,res,next)=>{
         const _id = req.user._id
         const postId = req.params._id
     const allAplication = await aplicationSchema.find({userId:_id,postId:postId})
-    console.log(allAplication)
+
     res.send(allAplication)
     }catch(err){
         next(err)
@@ -33,6 +41,7 @@ try{
 const _id = req.params._id
 const userId = req.user._id
 const findPost = await schema.findById({_id:_id})
+
 findPost.allAplication.push(userId)
 await findPost.save()
 if(findPost.allAplication){
@@ -45,7 +54,7 @@ res.send("application aded")
 }else{
     res.send("post not exist")
 }
-console.log(findPost)
+
 
 }catch(error){
     next(error)

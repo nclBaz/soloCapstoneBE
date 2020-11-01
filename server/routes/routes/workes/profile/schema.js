@@ -25,7 +25,9 @@ surname:{
 aboutMe:{
 type:String,
 default:"nothing to show"
-
+},
+dateOfBirth:{
+type:Date,
 },
 email:{
     type:String,

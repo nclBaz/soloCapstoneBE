@@ -11,7 +11,9 @@ answer:{
     type:String,
     default:"no answer",
 }
-})
+},
+{timestamps:true}
+)
 
 const Model = mongoose.model("aplication",aplicationSchema)
 module.exports=Model
