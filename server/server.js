@@ -32,10 +32,6 @@ const passport = require("passport");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
 
-const readCookie = {
-  origin: process.env.App_Url,
-  credentials: true,
-};
 const whitelist = ["http://localhost:3000"];
 const corsOptions = {
   origin: (origin, callback) => {
@@ -49,7 +45,6 @@ const corsOptions = {
 };
 server.use(cors());
 server.use(cookieParser());
-server.use(cors(readCookie));
 
 server.use(cors(corsOptions));
 server.use(express.json());

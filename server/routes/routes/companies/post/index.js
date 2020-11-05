@@ -82,12 +82,11 @@ postRoute.post(
           },
           async (err, data) => {
             if (!err) {
-              const post = await postSchema.findByIdAndUpdate({
-                _id: req.params._id,
+              let post = await postSchema.findOneAndUpdate(req.params.id, {
+                image: data.secure_url,
               });
-              post.image = data.secure_url;
-              await post.save();
-              res.status(201).send("image is aded");
+
+              res.status(201).send(post);
             }
           }
         );

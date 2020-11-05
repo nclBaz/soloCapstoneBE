@@ -4,7 +4,7 @@ const aplicationSchema = require("../../workes/aplication/schema");
 const { User } = require("../Midlewares/middleware");
 const workerProfile = require("../../workes/profile/schema");
 const manageAplication = express.Router();
-const sgMail = require("@sendgrid/mail");
+const sendEmail = require("@sendgrid/mail");
 
 manageAplication.get("/allPost", User, async (req, res, next) => {
   try {
@@ -18,7 +18,7 @@ manageAplication.get("/allPost", User, async (req, res, next) => {
   }
 });
 
-manageAplication.post(
+manageAplication.get(
   "/:postId/accept/:workerid",
   User,
   async (req, res, next) => {
@@ -26,33 +26,54 @@ manageAplication.post(
       const userID = req.params.workerid;
       const postID = req.params.postId;
       const accept = "accepted";
-      const sendPost = await aplicationSchema.findOneAndUpdate({
+      await aplicationSchema.findOneAndUpdate({
         userId: userID,
         postId: postID,
         answer: accept,
       });
+
       const removeAplication = await postSchema.find({
         _id: postID,
         allAplication: userID,
       });
-      removeAplication.pop(userID);
-      removeAplication.save();
-      if (removeAplication) {
-        res.send("removed");
-      }
-      res.send(sendPost);
+
+      const data = await removeAplication[0].allAplication.filter(
+        (item) => item != userID
+      );
+      await postSchema.findByIdAndUpdate(postID, { allAplication: data });
+
+      sendEmail.setApiKey(process.env.API_KEY_SENDGRID);
+      const postData = await postSchema.find({
+        _id: postID,
+      });
+      const user = req.user;
+      const worker = await workerProfile.findById({ _id: userID });
+
+      const msg = {
+        to: worker.email,
+        from: "TechJobs@email.com",
+        subject: `Email from ${user.companyName}`,
+        text: `Hello we want to inform you tha you have been accepted for ${postData.jobPosition} ,
+        You gona here more from us on this email ${user.email}        
+        `,
+      };
+
+      sendEmail.send(msg);
+
+      if (removeAplication) res.send("removed");
     } catch (err) {
       next(err);
       console.log(err);
     }
   }
 );
-manageAplication.post(
-  "/:postId/accept/:workerid",
+manageAplication.get(
+  "/:postId/notAccept/:workerid",
   User,
   async (req, res, next) => {
     try {
       const userID = req.params.workerid;
+      console.log(userID, "what inside");
       const postID = req.params.postId;
       const accept = "not accepted";
       const sendPost = await aplicationSchema.findOneAndUpdate({
@@ -64,8 +85,27 @@ manageAplication.post(
         _id: postID,
         allAplication: userID,
       });
-      removeAplication.pop(userID);
-      removeAplication.save();
+
+      const data = await removeAplication[0].allAplication.filter(
+        (item) => item != userID
+      );
+      await postSchema.findByIdAndUpdate(postID, { allAplication: data });
+
+      sendEmail.setApiKey(process.env.API_KEY_SENDGRID);
+      const postData = await postSchema.find({
+        _id: postID,
+      });
+      const user = req.user;
+      const worker = await workerProfile.findById({ _id: userID });
+
+      const msg = {
+        to: worker.email,
+        from: "TechJobs@email.com",
+        subject: `Email from ${user.companyName}`,
+        text: `Hello we want to inform you tha you have not been accepted for ${postData.jobPosition} `,
+      };
+
+      sendEmail.send(msg);
 
       res.send(sendPost);
     } catch (err) {

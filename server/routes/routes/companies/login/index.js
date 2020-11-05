@@ -42,8 +42,8 @@ companyRoute.get("/singleProfile/:_id", User, async (req, res, next) => {
       .populate("workExperience")
       .populate("education")
       .populate("skills");
-    if (profile) res.send(profile);
-    else res.status(404).send("Profile does not exist");
+
+    res.send(profile);
   } catch (error) {
     next(error);
     console.log(error);
@@ -167,7 +167,9 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
       .findOne({
         _id: req.params._id,
       })
-      .populate("workeExperience", "education", "skills");
+      .populate("workeExperience")
+      .populate("education")
+      .populate("skills");
     console.log(profile);
 
     const doc = new createPdf();
@@ -219,7 +221,7 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
     doc.fontSize(12);
     doc.text(
       `      
-        ${profile.about}`,
+        ${profile.aboutMe}`,
       100,
       210,
       {
@@ -234,9 +236,10 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
     });
     doc.fontSize(12);
     const education = async () => {
-      profile.education.map(
-        (education) =>
-          doc.text(`
+      profile.education &&
+        profile.education.map(
+          (education) =>
+            doc.text(`
             Education
             SchoolName: ${education.schoolName}
             Image: ${education.image}
@@ -245,13 +248,13 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
             Description: ${education.description}
             About:${education.about}
             SkillLearned:  ${education.skillsLearned}
-            -------------------------------------------------------
+      
           `),
-        {
-          width: 410,
-          align: "center",
-        }
-      );
+          {
+            width: 410,
+            align: "center",
+          }
+        );
     };
     await education();
 
@@ -262,22 +265,22 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
     });
     doc.fontSize(12);
     const workExperience = async () => {
-      profile.workExperience.map(
-        (work) =>
-          doc.text(`
+      profile.workExperience &&
+        profile.workExperience.map(
+          (work) =>
+            doc.text(`
              Experiences
             Worked In: ${work.workExperience}
             Started: ${work.started}
             Finished:  ${work.finished}
-            Description: ${work.description}
+            Description: ${work.workPosition}
 
-            -------------------------------------------------------
           `),
-        {
-          width: 410,
-          align: "center",
-        }
-      );
+          {
+            width: 410,
+            align: "center",
+          }
+        );
     };
     await workExperience();
     doc.fontSize(18);
@@ -287,18 +290,19 @@ companyRoute.get("/:_id/pdf", async (req, res, next) => {
     });
     doc.fontSize(12);
     const skills = async () => {
-      profile.skills.map(
-        (skill) =>
-          doc.text(`
+      profile.skills &&
+        profile.skills.map(
+          (skill) =>
+            doc.text(`
             Skills
             Skill: ${skill.skillName}
-            -------------------------------------------------------
+        
           `),
-        {
-          width: 410,
-          align: "center",
-        }
-      );
+          {
+            width: 410,
+            align: "center",
+          }
+        );
     };
     await skills();
 
