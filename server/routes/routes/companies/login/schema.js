@@ -21,6 +21,12 @@ location:{
 image:{
     type:String
 },
+website:{
+    type:String
+},
+personel:{
+type:String
+},
 email:{
     type:String,
      required:true,
