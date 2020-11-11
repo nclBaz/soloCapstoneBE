@@ -4,19 +4,12 @@ const validator = require("validator");
 
 const companySchema = new Schema(
   {
-    jobOffer: {
-      type: String,
-    },
     jobPosition: {
       type: String,
       // required: true,
       // minlength: [4, "Company  name should be at least 4 character"],
     },
-    about: {
-      type: String,
-      required: true,
-      minlength: [4, "name should be at least 4 character"],
-    },
+
     salary: {
       type: String,
       default: "Not specified.",
@@ -24,6 +17,7 @@ const companySchema = new Schema(
     type: {
       type: String,
     },
+
     jobDescription: {
       type: String,
       required: true,
@@ -41,18 +35,13 @@ const companySchema = new Schema(
     location: {
       type: String,
     },
-    requirments: [
-      {
-        type: String,
-        required: true,
-      },
-    ],
+    requirments: {
+      type: String,
+    },
 
-    benefites: [
-      {
-        type: String,
-      },
-    ],
+    benefites: {
+      type: String,
+    },
 
     allAplication: [{ type: Schema.Types.ObjectId, ref: "workersprofile" }],
   },

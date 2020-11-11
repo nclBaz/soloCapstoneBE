@@ -138,7 +138,7 @@ companyRoute.post(
 
 companyRoute.put("/edit", User, async (req, res, next) => {
   try {
-    delete req.body.email;
+    // delete req.body.email;
     const edit = Object.keys(req.body);
 
     edit.forEach((edit) => (req.user[edit] = req.body[edit]));
@@ -321,9 +321,9 @@ companyRoute.post("/login", async (req, res, next) => {
     if (user) {
       const token = await createToken(user);
       res.cookie("token", token.token, {
-        // httpOnly:true,
-        // secure:true,
-        // sameSite:true,
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
       });
       res.send("loged in");
     }
@@ -338,7 +338,11 @@ companyRoute.post("/logout", User, async (req, res, next) => {
     const user = req.user;
     user.token = "";
     await user.save({ validateBeforeSave: false });
-    res.cookie("nothing", user.token);
+    res.clearCookie("token", {
+      secure: true,
+      httpOnly: true,
+      sameSite: "none",
+    });
     res.send("ok");
   } catch (err) {
     console.log(err);

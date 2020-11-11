@@ -34,6 +34,7 @@ postRoute.get("/", User, async (req, res, next) => {
 postRoute.get("/singelPost/:_id", User, async (req, res, next) => {
   try {
     const singelPost = req.params._id;
+    console.log(req.params._id);
     const findPost = await postSchema
       .findById({
         _id: singelPost,
@@ -56,14 +57,15 @@ postRoute.post("/newPost", User, async (req, res, next) => {
       companyName: user.companyName,
       location: user.location,
     });
-    await newPost.save();
+    const data = await newPost.save();
 
-    const addToProfile = await profileSchema.findById({ _id: user });
+    const addToProfile = await profileSchema.findById({ _id: user._id });
     const jobOffers = addToProfile.jobOffers;
     jobOffers.push(newPost._id);
     await addToProfile.save({ validateBeforeSave: false });
 
-    res.send("post has been sent");
+    res.send(data);
+    console.log(data);
   } catch (err) {
     next(err);
     console.log(err);
@@ -82,11 +84,15 @@ postRoute.post(
           },
           async (err, data) => {
             if (!err) {
-              let post = await postSchema.findOneAndUpdate(req.params.id, {
-                image: data.secure_url,
+              const user = await postSchema.findById({
+                // image: data.secure_url,
+                _id: req.params._id,
               });
 
-              res.status(201).send(post);
+              user.image = data.secure_url;
+              const info = await user.save({ validateBeforeSave: false });
+              res.status(201).send(info);
+              console.log(user);
             }
           }
         );
@@ -107,11 +113,11 @@ postRoute.post(
 postRoute.put("/editPost/:_id", User, async (req, res, next) => {
   try {
     console.log(req.body);
-    const updatePost = await postSchema.findOneAndUpdate(
+    const updatePost = await postSchema.findByIdAndUpdate(
       req.params._id,
       req.body
     );
-    if (updatePost) res.send("Post updated");
+    if (updatePost) res.send(updatePost);
     else res.status(404).send("not found");
   } catch (err) {
     console.log(err);
