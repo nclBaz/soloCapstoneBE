@@ -3,6 +3,7 @@ const postSchema = require("./schema");
 const { User } = require("../Midlewares/middleware");
 const q2m = require("query-to-mongo");
 const profileSchema = require("../login/schema");
+const apliactionSchema = require("../../workes/aplication/schema");
 const cloudinary = require("cloudinary").v2;
 const streamifier = require("streamifier");
 const multer = require("multer");
@@ -127,7 +128,11 @@ postRoute.put("/editPost/:_id", User, async (req, res, next) => {
 postRoute.delete("/deletePost/:_id", User, async (req, res, next) => {
   try {
     const _id = req.params._id;
-    const remove = await postSchema.findOneAndDelete({ _id: _id });
+    const remove = await postSchema.findByIdAndDelete({ _id: _id });
+    const removeAplication = await apliactionSchema.find({ postId: _id });
+    removeAplication.postId = [];
+    removeAplication.userId = "";
+    await removeAplication.save();
     if (remove) {
       res.send("Post is deleted");
     } else {

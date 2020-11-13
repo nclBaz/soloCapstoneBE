@@ -76,11 +76,21 @@ educationRoute.post(
           },
           async (err, data) => {
             if (!err) {
-              let user = await schema.findOneAndUpdate(req.params._id, {
-                image: data.secure_url,
+              const user = await schema.findById({
+                // image: data.secure_url,
+                _id: req.params._id,
               });
 
-              if (user) res.status(201).json(user);
+              user.image = data.secure_url;
+              const info = await user.save({ validateBeforeSave: false });
+              res.status(201).send(info);
+              console.log(user);
+
+              //   let user = await schema.findOneAndUpdate(req.params._id, {
+              //     image: data.secure_url,
+              //   });
+
+              //   if (user) res.status(201).json(user);
             }
           }
         );
