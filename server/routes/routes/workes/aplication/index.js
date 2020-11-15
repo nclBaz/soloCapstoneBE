@@ -45,6 +45,7 @@ aplicationRoute.post("/aply/:_id", User, async (req, res, next) => {
     const _id = req.params._id;
     const userId = req.user._id;
     const findPost = await schema.findById({ _id: _id });
+    console.log(findPost, "why is not here");
 
     findPost.allAplication.push(userId);
     await findPost.save();

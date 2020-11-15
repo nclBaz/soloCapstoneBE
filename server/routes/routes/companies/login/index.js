@@ -354,8 +354,8 @@ companyRoute.post("/register", async (req, res, next) => {
   try {
     const data = req.body;
     const newData = new schema(data);
-    await newData.save();
-    res.send("new User is created");
+    const created = await newData.save();
+    res.send(created);
   } catch (err) {
     next(err);
     console.log(err);
