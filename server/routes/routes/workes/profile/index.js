@@ -133,7 +133,7 @@ workersRoute.post(
   }
 );
 workersRoute.post(
-  "/workerImage",
+  "/workerImage/:_id",
   upload.single("image"),
   async (req, res, next) => {
     try {
@@ -144,9 +144,15 @@ workersRoute.post(
           },
           async (err, data) => {
             if (!err) {
-              req.user.image = data.secure_url;
-              await req.user.save({ validateBeforeSave: false });
-              res.status(201).send("image is aded");
+              const user = await schema.findById({
+                // image: data.secure_url,
+                _id: req.params._id,
+              });
+
+              user.image = data.secure_url;
+              const info = await user.save({ validateBeforeSave: false });
+              res.status(201).send(info);
+              console.log(user);
             }
           }
         );
