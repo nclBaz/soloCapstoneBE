@@ -1,11 +1,12 @@
 const express = require("express");
+const cors = require("cors");
 const {
   notFound,
   badRequest,
   newDefinedError,
   otherGenericError,
 } = require("./errorHeandlers");
-const cors = require("cors");
+
 const login = require("./routes/routes/companies/login");
 const post = require("./routes/routes/companies/post");
 const profileWorker = require("./routes/routes/workes/profile");
