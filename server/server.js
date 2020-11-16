@@ -32,7 +32,7 @@ const passport = require("passport");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
 
-const whitelist = ["http://localhost:3000"];
+const whitelist = process.env.Client_Website;
 const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
