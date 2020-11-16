@@ -32,22 +32,16 @@ const passport = require("passport");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
 
-const whitelist = process.env.Client_Website || process.env.localhost_link;
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+const corsOpt = {
+  origin: process.env.Client_Website,
   credentials: true,
 };
+server.use(cors(corsOpt));
+
+server.use(express.json());
 
 server.use(cookieParser());
 
-server.use(cors(corsOptions));
-server.use(express.json());
 server.use(passport.initialize());
 server.use(passport.session());
 
