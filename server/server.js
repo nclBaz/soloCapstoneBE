@@ -43,7 +43,7 @@ const corsOptions = {
   },
   credentials: true,
 };
-server.use(cors());
+
 server.use(cookieParser());
 
 server.use(cors(corsOptions));
