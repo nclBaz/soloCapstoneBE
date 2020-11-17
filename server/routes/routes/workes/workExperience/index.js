@@ -12,6 +12,12 @@ cloudinary.config({
   api_key: process.env.api_key,
   api_secret: process.env.api_secret,
 });
+experienceRoute.all("*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
 
 experienceRoute.get("/workExperience", User, async (req, res, next) => {
   try {
@@ -65,16 +71,15 @@ experienceRoute.post(
           },
           async (err, data) => {
             if (!err) {
-              let user = await schema.findOneAndUpdate(req.params.id, {
-                image: data.secure_url,
+              const user = await schema.findById({
+                // image: data.secure_url,
+                _id: req.params.id,
               });
 
-              if (user) {
-                res.status(201).json(user);
-                console.log(user, "hello user");
-              } else {
-                res.sendStatus(400);
-              }
+              user.image = data.secure_url;
+              const info = await user.save({ validateBeforeSave: false });
+              res.status(201).send(info);
+              console.log(user);
             }
           }
         );
