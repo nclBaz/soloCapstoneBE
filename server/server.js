@@ -37,7 +37,7 @@ const corsOpt = {
   origin: process.env.Client_Website,
   credentials: true,
 };
-server.use(cors(corsOpt));
+server.use(cors({}));
 
 server.use(express.json());
 
