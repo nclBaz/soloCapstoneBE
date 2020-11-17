@@ -31,6 +31,14 @@ require("./routes/routes/workes/oauth");
 const passport = require("passport");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
+server.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "https://tech--jobs.herokuapp.com");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 const whitelist = [process.env.Client_Website];
 const corsOptions = {
@@ -43,10 +51,9 @@ const corsOptions = {
   },
   credentials: true,
 };
-
+server.use(cors(corsOptions));
 server.use(cookieParser());
 
-server.use(cors(corsOptions));
 server.use(express.json());
 server.use(passport.initialize());
 server.use(passport.session());
