@@ -29,14 +29,13 @@ require("./routes/routes/companies/oauth");
 require("./routes/routes/workes/oauth");
 
 const passport = require("passport");
+const { createServer } = require("https");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
-server.use(function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "https://tech--jobs.herokuapp.com");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
+server.all("*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
 });
 
