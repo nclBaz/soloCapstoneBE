@@ -1,12 +1,11 @@
 const express = require("express");
-const cors = require("cors");
 const {
   notFound,
   badRequest,
   newDefinedError,
   otherGenericError,
 } = require("./errorHeandlers");
-
+const cors = require("cors");
 const login = require("./routes/routes/companies/login");
 const post = require("./routes/routes/companies/post");
 const profileWorker = require("./routes/routes/workes/profile");
@@ -33,16 +32,22 @@ const passport = require("passport");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
 
-const corsOpt = {
-  origin: process.env.Client_Website,
+const whitelist = [process.env.Client_Website];
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true,
 };
-server.use(cors({}));
-
-server.use(express.json());
 
 server.use(cookieParser());
 
+server.use(cors(corsOptions));
+server.use(express.json());
 server.use(passport.initialize());
 server.use(passport.session());
 
