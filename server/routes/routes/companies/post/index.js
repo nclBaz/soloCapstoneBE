@@ -1,83 +1,77 @@
-const express = require("express");
-const postSchema = require("./schema");
-const { User } = require("../Midlewares/middleware");
-const q2m = require("query-to-mongo");
-const profileSchema = require("../login/schema");
-const apliactionSchema = require("../../workes/aplication/schema");
-const cloudinary = require("cloudinary").v2;
-const streamifier = require("streamifier");
-const multer = require("multer");
-const postRoute = express.Router();
-const upload = multer({});
+const express = require("express")
+const postSchema = require("./schema")
+const { User } = require("../Midlewares/middleware")
+const q2m = require("query-to-mongo")
+const profileSchema = require("../login/schema")
+const apliactionSchema = require("../../workes/aplication/schema")
+const cloudinary = require("cloudinary").v2
+const streamifier = require("streamifier")
+const multer = require("multer")
+const postRoute = express.Router()
+const upload = multer({})
 cloudinary.config({
   cloud_name: process.env.cloud_name,
   api_key: process.env.api_key,
   api_secret: process.env.api_secret,
-});
-postRoute.all("*", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+})
 
 postRoute.get("/", User, async (req, res, next) => {
   try {
-    const id = req.user._id;
-    const query = q2m(req.query);
+    const id = req.user._id
+    const query = q2m(req.query)
     const post = await postSchema
       .find(query.criteria, query.options.fields, { userID: id })
       .populate("allAplication")
       .skip(query.options.skip)
       .limit(query.options.limit)
-      .sort(query.options.sort);
-    if (post.length > 0) res.send(post);
-    else res.status(404).send("empty");
+      .sort(query.options.sort)
+    if (post.length > 0) res.send(post)
+    else res.status(404).send("empty")
   } catch (err) {
-    next(err);
-    console.log(err);
+    next(err)
+    console.log(err)
   }
-});
+})
 postRoute.get("/singelPost/:_id", User, async (req, res, next) => {
   try {
-    const singelPost = req.params._id;
-    console.log(req.params._id);
+    const singelPost = req.params._id
+    console.log(req.params._id)
     const findPost = await postSchema
       .findById({
         _id: singelPost,
       })
-      .populate("allAplication");
-    console.log(findPost);
-    res.status(201).send(findPost);
+      .populate("allAplication")
+    console.log(findPost)
+    res.status(201).send(findPost)
   } catch (err) {
-    next(err);
-    console.log(err);
+    next(err)
+    console.log(err)
   }
-});
+})
 postRoute.post("/newPost", User, async (req, res, next) => {
   try {
-    const user = req.user;
-    const post = req.body;
+    const user = req.user
+    const post = req.body
     const newPost = new postSchema({
       ...post,
       userID: user._id,
       companyName: user.companyName,
       location: user.location,
-    });
-    const data = await newPost.save();
+    })
+    const data = await newPost.save()
 
-    const addToProfile = await profileSchema.findById({ _id: user._id });
-    const jobOffers = addToProfile.jobOffers;
-    jobOffers.push(newPost._id);
-    await addToProfile.save({ validateBeforeSave: false });
+    const addToProfile = await profileSchema.findById({ _id: user._id })
+    const jobOffers = addToProfile.jobOffers
+    jobOffers.push(newPost._id)
+    await addToProfile.save({ validateBeforeSave: false })
 
-    res.send(data);
-    console.log(data);
+    res.send(data)
+    console.log(data)
   } catch (err) {
-    next(err);
-    console.log(err);
+    next(err)
+    console.log(err)
   }
-});
+})
 postRoute.post(
   "/uploadImage/:_id",
   User,
@@ -94,60 +88,60 @@ postRoute.post(
               const user = await postSchema.findById({
                 // image: data.secure_url,
                 _id: req.params._id,
-              });
+              })
 
-              user.image = data.secure_url;
-              const info = await user.save({ validateBeforeSave: false });
-              res.status(201).send(info);
-              console.log(user);
+              user.image = data.secure_url
+              const info = await user.save({ validateBeforeSave: false })
+              res.status(201).send(info)
+              console.log(user)
             }
           }
-        );
-        streamifier.createReadStream(req.file.buffer).pipe(cloud_upload);
+        )
+        streamifier.createReadStream(req.file.buffer).pipe(cloud_upload)
       } else {
-        const err = new Error();
-        err.httpStatusCode = 400;
-        err.message = " image is missing";
-        next(err);
+        const err = new Error()
+        err.httpStatusCode = 400
+        err.message = " image is missing"
+        next(err)
       }
     } catch (error) {
-      next(error);
-      console.log(error);
+      next(error)
+      console.log(error)
     }
   }
-);
+)
 
 postRoute.put("/editPost/:_id", User, async (req, res, next) => {
   try {
-    console.log(req.body);
+    console.log(req.body)
     const updatePost = await postSchema.findByIdAndUpdate(
       req.params._id,
       req.body
-    );
-    if (updatePost) res.send(updatePost);
-    else res.status(404).send("not found");
+    )
+    if (updatePost) res.send(updatePost)
+    else res.status(404).send("not found")
   } catch (err) {
-    console.log(err);
-    next(err);
+    console.log(err)
+    next(err)
   }
-});
+})
 postRoute.delete("/deletePost/:_id", User, async (req, res, next) => {
   try {
-    const _id = req.params._id;
-    const remove = await postSchema.findByIdAndDelete({ _id: _id });
-    const removeAplication = await apliactionSchema.find({ postId: _id });
-    removeAplication.postId = [];
-    removeAplication.userId = "";
-    await removeAplication.save();
+    const _id = req.params._id
+    const remove = await postSchema.findByIdAndDelete({ _id: _id })
+    const removeAplication = await apliactionSchema.find({ postId: _id })
+    removeAplication.postId = []
+    removeAplication.userId = ""
+    await removeAplication.save()
     if (remove) {
-      res.send("Post is deleted");
+      res.send("Post is deleted")
     } else {
-      res.send("Post does not exist");
+      res.send("Post does not exist")
     }
   } catch (err) {
-    next(err);
-    console.log(err);
+    next(err)
+    console.log(err)
   }
-});
+})
 
-module.exports = postRoute;
+module.exports = postRoute

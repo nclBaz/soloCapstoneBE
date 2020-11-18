@@ -1,78 +1,85 @@
-const express = require("express");
+const express = require("express")
 const {
   notFound,
   badRequest,
   newDefinedError,
   otherGenericError,
-} = require("./errorHeandlers");
-const cors = require("cors");
-const login = require("./routes/routes/companies/login");
-const post = require("./routes/routes/companies/post");
-const profileWorker = require("./routes/routes/workes/profile");
-const education = require("./routes/routes/workes/education");
-const aplication = require("./routes/routes/workes/aplication/index");
-const workExperience = require("./routes/routes/workes/workExperience");
-const skills = require("./routes/routes/workes/skills");
-const manageAplication = require("./routes/routes/companies/aplication");
-const port = process.env.PORT;
-const mongoose = require("mongoose");
-const name = process.env.DATABASENAME;
-const password = process.env.PASSWORD;
-const database = process.env.DATABASE;
-const mainDatabase = process.env.MAINDATABASE;
-const { join } = require("path");
-const listEndpoints = require("express-list-endpoints");
+} = require("./errorHeandlers")
+const cors = require("cors")
+const login = require("./routes/routes/companies/login")
+const post = require("./routes/routes/companies/post")
+const profileWorker = require("./routes/routes/workes/profile")
+const education = require("./routes/routes/workes/education")
+const aplication = require("./routes/routes/workes/aplication/index")
+const workExperience = require("./routes/routes/workes/workExperience")
+const skills = require("./routes/routes/workes/skills")
+const manageAplication = require("./routes/routes/companies/aplication")
+const port = process.env.PORT
+const mongoose = require("mongoose")
+const name = process.env.DATABASENAME
+const password = process.env.PASSWORD
+const database = process.env.DATABASE
+const mainDatabase = process.env.MAINDATABASE
+const { join } = require("path")
+const listEndpoints = require("express-list-endpoints")
 
-const cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser")
 
-require("./routes/routes/companies/oauth");
-require("./routes/routes/workes/oauth");
+require("./routes/routes/companies/oauth")
+require("./routes/routes/workes/oauth")
 
-const passport = require("passport");
-const { createServer } = require("https");
-const allPaths = join(__dirname, "./routes/routes/allImages");
-const server = express();
-server.all("*", function (req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+const passport = require("passport")
 
-const whitelist = [process.env.Client_Website];
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,
-};
-server.use(cors(corsOptions));
-server.use(cookieParser());
+const allPaths = join(__dirname, "./routes/routes/allImages")
+const server = express()
+// server.all("*", function (req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+//   res.header("Access-Control-Allow-Headers", "Content-Type");
+//   next();
+// });
 
-server.use(express.json());
-server.use(passport.initialize());
-server.use(passport.session());
+// const whitelist = [process.env.Client_Website];
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (whitelist.indexOf(origin) !== -1 || !origin) {
+//       callback(null, true);
+//     } else {
+//       callback(new Error("Not allowed by CORS"));
+//     }
+//   },
+//   credentials: true,
+// };
+server.use(
+  cors({ origin: "https://frontend-solocapstone-ppq2kplry.vercel.app" })
+)
+// server.use(cookieParser())
 
-server.use(express.static(allPaths));
-server.use(notFound);
-server.use(badRequest);
-server.use(newDefinedError);
-server.use(otherGenericError);
+server.use(express.json())
+// server.use(passport.initialize())
+// server.use(passport.session())
 
-server.use("/login", login);
-server.use("/post", post);
-server.use("/aplicationn", manageAplication);
-server.use("/profile", profileWorker);
-server.use("/education", education);
-server.use("/aplication", aplication);
-server.use("/workExperience", workExperience);
-server.use("/skills", skills);
+// server.use(express.static(allPaths))
 
-console.log(listEndpoints(server));
+server.use("/test", (req, res) => {
+  res.send("hello")
+})
+
+server.use("/login", login)
+server.use("/post", post)
+server.use("/aplicationn", manageAplication)
+server.use("/profile", profileWorker)
+server.use("/education", education)
+server.use("/aplication", aplication)
+server.use("/workExperience", workExperience)
+server.use("/skills", skills)
+
+// server.use(notFound)
+// server.use(badRequest)
+// server.use(newDefinedError)
+// server.use(otherGenericError)
+
+console.log(listEndpoints(server))
 
 mongoose
   .connect(
@@ -84,7 +91,7 @@ mongoose
   )
   .then(
     server.listen(port, () => {
-      console.log(`Server running on port : ${port}`);
+      console.log(`Server running on port : ${port}`)
     })
   )
-  .catch((err) => console.log(err));
+  .catch(err => console.log(err))
