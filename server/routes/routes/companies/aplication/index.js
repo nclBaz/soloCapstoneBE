@@ -6,11 +6,9 @@ const workerProfile = require("../../workes/profile/schema")
 const manageAplication = express.Router()
 const sendEmail = require("@sendgrid/mail")
 
-manageAplication.get("/allPost", User, async (req, res, next) => {
+manageAplication.get("/allPost", async (req, res, next) => {
   try {
-    const allPost = await postSchema
-      .find({ userID: req.user._id })
-      .populate("allAplication")
+    const allPost = await postSchema.find({}).populate("allAplication")
     res.send(allPost)
   } catch (error) {
     next(error)
