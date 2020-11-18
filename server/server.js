@@ -32,14 +32,16 @@ const passport = require("passport");
 const { createServer } = require("https");
 const allPaths = join(__dirname, "./routes/routes/allImages");
 const server = express();
+
+/*
 server.all("*", function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Content-Type");
   next();
-});
+});*/
 
-const whitelist = [process.env.Client_Website];
+/*const whitelist = [process.env.Client_Website];
 const corsOptions = {
   origin: (origin, callback) => {
     if (whitelist.indexOf(origin) !== -1 || !origin) {
@@ -50,7 +52,7 @@ const corsOptions = {
   },
   credentials: true,
 };
-
+*/
 server.use(cors({ origin: "https://frontend-solocapstone-ppq2kplry.vercel.app", credentials: true }))
 server.use(cookieParser());
 
@@ -59,19 +61,21 @@ server.use(passport.initialize());
 server.use(passport.session());
 
 server.use(express.static(allPaths));
-server.use(notFound);
-server.use(badRequest);
-server.use(newDefinedError);
-server.use(otherGenericError);
 
 server.use("/login", login);
+server.use("/profile", profileWorker);
+/*
 server.use("/post", post);
 server.use("/aplicationn", manageAplication);
-server.use("/profile", profileWorker);
 server.use("/education", education);
 server.use("/aplication", aplication);
 server.use("/workExperience", workExperience);
 server.use("/skills", skills);
+*/
+server.use(notFound);
+server.use(badRequest);
+server.use(newDefinedError);
+server.use(otherGenericError);
 
 console.log(listEndpoints(server));
 
