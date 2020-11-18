@@ -54,7 +54,7 @@ const corsOptions = {
 };
 */
 server.use(cors({ origin: "https://frontend-solocapstone-ppq2kplry.vercel.app", credentials: true }))
-server.use(cookieParser());
+//server.use(cookieParser());
 
 server.use(express.json());
 server.use(passport.initialize());
