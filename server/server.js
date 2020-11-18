@@ -53,7 +53,7 @@ const server = express()
 
 const corsOptions = {
   origin: process.env.Client_Website,
-  withCredentials: true,
+  credentials: true,
 }
 console.log("ENV -------------> ", process.env.Client_Website)
 server.use(cors(corsOptions))
