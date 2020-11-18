@@ -50,9 +50,7 @@ const server = express()
 //   },
 //   credentials: true,
 // };
-server.use(
-  cors({ origin: "https://frontend-solocapstone-ppq2kplry.vercel.app" })
-)
+server.use(cors({ origin: process.env.Client_Website }))
 // server.use(cookieParser())
 
 server.use(express.json())
