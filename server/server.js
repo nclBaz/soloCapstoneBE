@@ -51,8 +51,11 @@ const server = express()
 //   credentials: true,
 // };
 
-console.log("ENV -------------> ", process.env.Client_Website)
-server.use(cors({ origin: process.env.Client_Website }))
+const corsOptions = {
+  origin: `${process.env.Client_Website}`,
+}
+console.log("ENV -------------> ")
+server.use(cors(corsOptions))
 // server.use(cookieParser())
 
 server.use(express.json())
