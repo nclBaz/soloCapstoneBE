@@ -50,7 +50,7 @@ const corsOptions = {
   },
   credentials: true,
 };
-server.use(cors(corsOptions));
+server.use(cors({origin: 'https://frontend-solocapstone-ppq2kplry.vercel.app' }));
 server.use(cookieParser());
 
 server.use(express.json());
