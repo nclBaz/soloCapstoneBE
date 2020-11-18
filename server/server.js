@@ -51,7 +51,7 @@ const corsOptions = {
   credentials: true,
 };
 
-server.use(cors({ origin: "*", credentials: true }))
+server.use(cors({ origin: "https://frontend-solocapstone-ppq2kplry.vercel.app/", credentials: true }))
 server.use(cookieParser());
 
 server.use(express.json());
