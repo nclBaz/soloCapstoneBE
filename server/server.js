@@ -52,9 +52,9 @@ const server = express()
 // };
 
 const corsOptions = {
-  origin: `${process.env.Client_Website}`,
+  origin: "https://frontend-solocapstone-kfz1m562s.vercel.app",
 }
-console.log("ENV -------------> ")
+console.log("ENV -------------> ", process.env.Client_Website)
 server.use(cors(corsOptions))
 // server.use(cookieParser())
 
