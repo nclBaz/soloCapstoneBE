@@ -50,6 +50,8 @@ const server = express()
 //   },
 //   credentials: true,
 // };
+
+console.log("ENV -------------> ", process.env.Client_Website)
 server.use(cors({ origin: process.env.Client_Website }))
 // server.use(cookieParser())
 
