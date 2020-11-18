@@ -101,7 +101,7 @@ experienceRoute.put("/edit/:_id", User, async (req, res, next) => {
   try {
     const id = req.params._id;
     const update = req.body;
-    const editPost = await schema.findOneAndUpdate(id, update);
+    const editPost = await schema.findByIdAndUpdate({ _id: id }, update);
     console.log(editPost, "edited post");
     if (editPost) {
       res.send(editPost);

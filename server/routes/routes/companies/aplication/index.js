@@ -141,22 +141,6 @@ manageAplication.post("/sendEmail/:workerId", User, async (req, res, next) => {
     console.log(error);
   }
 });
-// manageAplication.post("/send/question", async (req, res, next) => {
-//   try {
-//     sgMail.setApiKey(process.env.API_KEY_SENDGRID);
-//     sgMail.send({
-//       to: `aleksandergjoni125@gmail.com`,
-//       from: `TechJobs@email.com`,
-//       subject: `Questions Team`,
-//       text: `thanks for contacting us. We will send you an answer ASAP! YOLO TEA`,
-//     });
-
-//     res.status(201).send("Sent");
-//   } catch (error) {
-//     console.log(error);
-//     next(error);
-//   }
-// });
 
 manageAplication.post(
   "/:postId/sendEmail/:workerId",
