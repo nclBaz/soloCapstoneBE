@@ -59,10 +59,10 @@ console.log("ENV -------------> ", process.env.Client_Website)
 server.use(cors(corsOptions))
 server.use(cookieParser())
 
-server.all(function (req, res, next) {
-  res.header("Access-Control-Allow-Credentials", true)
-  next()
-})
+// server.all(function (req, res, next) {
+//   res.header("Access-Control-Allow-Credentials", true)
+//   next()
+// })
 
 server.use(express.json())
 server.use(passport.initialize())

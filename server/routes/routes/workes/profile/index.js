@@ -202,10 +202,20 @@ workersRoute.post("/login", async (req, res, next) => {
     if (user) {
       const token = await createToken(user)
       console.log("hello token", token.token, "this is token")
-      res.cookie("token", token.token, {
-        // httpOnly: true,
-        // secure: true,
-        // sameSite: "none",
+      res.cookie("accessToken", token.token, {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none",
+      })
+      res.cookie("activeL", "activeValue", {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none",
+      })
+      res.cookie("notSecure", "activeValue", {
+        secure: false,
+        httpOnly: true,
+        sameSite: "none",
       })
       res.send("loged in")
     }

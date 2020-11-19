@@ -326,10 +326,21 @@ companyRoute.post("/login", async (req, res, next) => {
     const user = await schema.findByCredentials(email, password)
     if (user) {
       const token = await createToken(user)
-      res.cookie("token", token.token, {
-        // httpOnly: true,
-        // secure: true,
-        // sameSite: "none",
+      res.cookie("accessToken", token.token, {
+        //secure: true,
+        httpOnly: true,
+        sameSite: "none",
+      })
+      res.cookie("refreshToken", token.refreshToken, {
+        httpOnly: true,
+        //secure: true,
+        path: "/refreshToken",
+        sameSite: "none",
+      })
+      res.cookie("activeL", "activeValue", {
+        //secure: true,
+        httpOnly: true,
+        sameSite: "none",
       })
       res.send("loged in")
     }
