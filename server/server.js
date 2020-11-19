@@ -65,10 +65,10 @@ server.all(function (req, res, next) {
 })
 
 server.use(express.json())
-// server.use(passport.initialize())
-// server.use(passport.session())
+server.use(passport.initialize())
+server.use(passport.session())
 
-// server.use(express.static(allPaths))
+server.use(express.static(allPaths))
 
 server.use("/test", (req, res) => {
   res.send("hello")
@@ -83,10 +83,10 @@ server.use("/aplication", aplication)
 server.use("/workExperience", workExperience)
 server.use("/skills", skills)
 
-// server.use(notFound)
-// server.use(badRequest)
-// server.use(newDefinedError)
-// server.use(otherGenericError)
+server.use(notFound)
+server.use(badRequest)
+server.use(newDefinedError)
+server.use(otherGenericError)
 
 console.log(listEndpoints(server))
 
